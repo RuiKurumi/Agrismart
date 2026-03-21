@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../../l10n/app_localizations.dart';
 import '../../theme/app_theme.dart';
 import '../onboarding/sign_up_page.dart';
 import '../onboarding/forgot_password_page.dart';
 import '../onboarding/phone_sign_in_page.dart';
 import '../onboarding/create_profile_page.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class AppSignInPage extends StatefulWidget {
   const AppSignInPage({super.key});
 
@@ -27,11 +28,10 @@ class _SignInPageState extends State<AppSignInPage> {
     super.dispose();
   }
 
-
-
   Future<void> _signIn() async {
+    final l10n = AppLocalizations.of(context)!;
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
-      _showError('Please fill in all fields.');
+      _showError(l10n.pleaseFillAllFields);
       return;
     }
     setState(() => _isLoading = true);
@@ -40,36 +40,31 @@ class _SignInPageState extends State<AppSignInPage> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const CreateProfilePage()),
-        );
-      }
     } on FirebaseAuthException catch (e) {
-      _showError(e.message ?? 'Sign in failed.');
+      _showError(e.message ?? l10n.signInFailed);
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
   }
 
   Future<void> _signInWithGoogle() async {
-  try {
-    final googleUser = await GoogleSignIn.instance.authenticate();
-    final credential = GoogleAuthProvider.credential(
-      idToken: googleUser.authentication.idToken,
-      accessToken: (await GoogleSignIn.instance.authorizationClient
-              .authorizeScopes(['email', 'profile']))
-          .accessToken,
-    );
-    await FirebaseAuth.instance.signInWithCredential(credential);
-  } on Exception catch (e) {
-    if (!e.toString().contains('Pigeon') &&
-        !e.toString().contains('List<Object?>')) {
-      _showError('Google sign in failed: $e');
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      final googleUser = await GoogleSignIn.instance.authenticate();
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleUser.authentication.idToken,
+        accessToken: (await GoogleSignIn.instance.authorizationClient
+                .authorizeScopes(['email', 'profile']))
+            .accessToken,
+      );
+      await FirebaseAuth.instance.signInWithCredential(credential);
+    } on Exception catch (e) {
+      if (!e.toString().contains('Pigeon') &&
+          !e.toString().contains('List<Object?>')) {
+        _showError('${l10n.googleSignInFailed}: $e');
+      }
     }
   }
-}
 
   void _showError(String message) {
     ScaffoldMessenger.of(context)
@@ -78,6 +73,8 @@ class _SignInPageState extends State<AppSignInPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -86,18 +83,18 @@ class _SignInPageState extends State<AppSignInPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 40),
-              const Text(
-                'Welcome Back!',
-                style: TextStyle(
+              Text(
+                l10n.signInTitle,
+                style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
                   color: AppTheme.textDark,
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'Use the form below to access your account.',
-                style: TextStyle(fontSize: 14, color: AppTheme.textGrey),
+              Text(
+                l10n.signInSubtitle,
+                style: const TextStyle(fontSize: 14, color: AppTheme.textGrey),
               ),
               const SizedBox(height: 32),
 
@@ -105,9 +102,9 @@ class _SignInPageState extends State<AppSignInPage> {
               TextFormField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  labelText: 'Email Address',
-                  hintText: 'Enter your email here...',
+                decoration: InputDecoration(
+                  labelText: l10n.emailAddress,
+                  hintText: l10n.emailHint,
                 ),
               ),
               const SizedBox(height: 16),
@@ -117,8 +114,8 @@ class _SignInPageState extends State<AppSignInPage> {
                 controller: _passwordController,
                 obscureText: _obscurePassword,
                 decoration: InputDecoration(
-                  labelText: 'Password',
-                  hintText: 'Enter your password here...',
+                  labelText: l10n.password,
+                  hintText: l10n.passwordHint,
                   suffixIcon: IconButton(
                     icon: Icon(
                       _obscurePassword
@@ -143,9 +140,9 @@ class _SignInPageState extends State<AppSignInPage> {
                       MaterialPageRoute(
                           builder: (_) => const ForgotPasswordPage()),
                     ),
-                    child: const Text(
-                      'Forgot Password?',
-                      style: TextStyle(color: AppTheme.textGrey),
+                    child: Text(
+                      l10n.forgotPassword,
+                      style: const TextStyle(color: AppTheme.textGrey),
                     ),
                   ),
                   SizedBox(
@@ -159,7 +156,7 @@ class _SignInPageState extends State<AppSignInPage> {
                               child: CircularProgressIndicator(
                                   color: Colors.white, strokeWidth: 2),
                             )
-                          : const Text('Sign In'),
+                          : Text(l10n.signInButton),
                     ),
                   ),
                 ],
@@ -167,10 +164,11 @@ class _SignInPageState extends State<AppSignInPage> {
               const SizedBox(height: 24),
 
               // Social divider
-              const Center(
+              Center(
                 child: Text(
-                  'Use a social platform to continue',
-                  style: TextStyle(color: AppTheme.textGrey, fontSize: 13),
+                  l10n.useaSocialPlatform,
+                  style:
+                      const TextStyle(color: AppTheme.textGrey, fontSize: 13),
                 ),
               ),
               const SizedBox(height: 16),
@@ -206,18 +204,18 @@ class _SignInPageState extends State<AppSignInPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    "Don't have an account? ",
-                    style: TextStyle(color: AppTheme.textGrey),
+                  Text(
+                    l10n.dontHaveAccount,
+                    style: const TextStyle(color: AppTheme.textGrey),
                   ),
                   GestureDetector(
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) => const SignUpPage()),
                     ),
-                    child: const Text(
-                      'Create Account',
-                      style: TextStyle(
+                    child: Text(
+                      l10n.createAccount,
+                      style: const TextStyle(
                         color: AppTheme.primaryGreen,
                         fontWeight: FontWeight.w600,
                       ),
@@ -233,13 +231,6 @@ class _SignInPageState extends State<AppSignInPage> {
                 child: OutlinedButton(
                   onPressed: () async {
                     await FirebaseAuth.instance.signInAnonymously();
-                    if (mounted) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const CreateProfilePage()),
-                      );
-                    }
                   },
                   style: OutlinedButton.styleFrom(
                     backgroundColor: AppTheme.guestButtonGrey,
@@ -249,9 +240,9 @@ class _SignInPageState extends State<AppSignInPage> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  child: const Text(
-                    'Continue as Guest',
-                    style: TextStyle(
+                  child: Text(
+                    l10n.continueAsGuest,
+                    style: const TextStyle(
                       color: AppTheme.textDark,
                       fontSize: 16,
                       fontWeight: FontWeight.w500,

@@ -5,6 +5,8 @@ import 'firebase_options.dart';
 import 'theme/app_theme.dart';
 import 'auth_gate.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import '../../l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

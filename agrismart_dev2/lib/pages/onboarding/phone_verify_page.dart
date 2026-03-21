@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../../../theme/app_theme.dart';
-import 'create_profile_page.dart';
+import '../../l10n/app_localizations.dart';
+import '../../theme/app_theme.dart';
 
 class PhoneVerifyPage extends StatefulWidget {
   final String verificationId;
@@ -32,9 +32,10 @@ class _PhoneVerifyPageState extends State<PhoneVerifyPage> {
   String get _otp => _controllers.map((c) => c.text).join();
 
   Future<void> _confirmCode() async {
+    final l10n = AppLocalizations.of(context)!;
     if (_otp.length < 6) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter the 6-digit code.')),
+        SnackBar(content: Text(l10n.enterSixDigitCode)),
       );
       return;
     }
@@ -45,16 +46,10 @@ class _PhoneVerifyPageState extends State<PhoneVerifyPage> {
         smsCode: _otp,
       );
       await FirebaseAuth.instance.signInWithCredential(credential);
-      if (mounted) {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (_) => const CreateProfilePage()),
-          (_) => false,
-        );
-      }
+      // AuthGate handles navigation
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.message ?? 'Invalid code.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message ?? l10n.invalidCode)));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -62,13 +57,15 @@ class _PhoneVerifyPageState extends State<PhoneVerifyPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Confirm your Code'),
+        title: Text(l10n.confirmCodeTitle),
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -76,9 +73,10 @@ class _PhoneVerifyPageState extends State<PhoneVerifyPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 8),
-            const Text(
-              'This code helps keep your account safe and secure.',
-              style: TextStyle(fontSize: 14, color: AppTheme.textGrey),
+            Text(
+              l10n.confirmCodeSubtitle,
+              style:
+                  const TextStyle(fontSize: 14, color: AppTheme.textGrey),
             ),
             const SizedBox(height: 32),
 
@@ -131,7 +129,7 @@ class _PhoneVerifyPageState extends State<PhoneVerifyPage> {
                       child: CircularProgressIndicator(
                           color: Colors.white, strokeWidth: 2),
                     )
-                  : const Text('Confirm & Continue'),
+                  : Text(l10n.confirmAndContinue),
             ),
           ],
         ),

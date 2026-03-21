@@ -1,0 +1,117 @@
+{
+  "@@locale": "tl",
+
+  "appName": "AgriSmart",
+
+  "signInTitle": "Maligayang Pagbabalik!",
+  "signInSubtitle": "Gamitin ang form sa ibaba para ma-access ang inyong account.",
+  "signInButton": "Mag-sign In",
+  "signUpTitle": "Magsimula Na",
+  "signUpSubtitle": "Gumawa ng account gamit ang form sa ibaba.",
+  "signUpButton": "Mag-sign Up",
+  "forgotPassword": "Nakalimutan ang Password?",
+  "forgotPasswordTitle": "Nakalimutan ang Password",
+  "forgotPasswordSubtitle": "Magpapadala kami ng email na may link para i-reset ang inyong password. Mangyaring ilagay ang email na nauugnay sa inyong account sa ibaba.",
+  "sendResetLink": "Magpadala ng Reset Link",
+  "resetLinkSent": "Naipadala ang reset link! Tingnan ang inyong email.",
+  "continueAsGuest": "Magpatuloy bilang Bisita",
+  "useaSocialPlatform": "Gumamit ng social platform para magpatuloy",
+  "dontHaveAccount": "Wala pang account? ",
+  "createAccount": "Gumawa ng Account",
+  "alreadyHaveAccount": "Mayroon nang account? ",
+  "login": "Mag-login",
+
+  "emailAddress": "Email Address",
+  "emailHint": "Ilagay ang inyong email dito...",
+  "emailLabel": "Ang inyong email",
+  "emailHintReset": "Ilagay ang inyong email para makatanggap ng link...",
+  "password": "Password",
+  "passwordHint": "Ilagay ang inyong password dito...",
+  "phoneNumber": "Ang Inyong Numero ng Telepono",
+  "phoneHint": "Mangyaring maglagay ng wastong numero...",
+  "phoneSignInTitle": "Mag-sign In gamit ang Telepono",
+  "phoneSignInSubtitle": "Ilagay ang inyong numero ng telepono sa ibaba para mag-rehistro.",
+  "signInWithPhone": "Mag-sign In gamit ang Telepono",
+  "confirmCodeTitle": "Kumpirmahin ang Inyong Code",
+  "confirmCodeSubtitle": "Tinutulungan ng code na ito na panatilihing ligtas ang inyong account.",
+  "confirmAndContinue": "Kumpirmahin at Magpatuloy",
+  "enterSixDigitCode": "Mangyaring ilagay ang 6-digit na code.",
+  "invalidCode": "Hindi wastong code.",
+  "verificationFailed": "Nabigo ang pag-verify.",
+  "pleaseEnterValidPhone": "Mangyaring maglagay ng wastong numero ng telepono.",
+
+  "createOrEditProfile": "Gumawa o I-edit ang Profile",
+  "yourName": "Ang Inyong Pangalan",
+  "yourCity": "Ang Inyong Lungsod / Munisipyo",
+  "selectProvince": "Pumili ng Probinsya",
+  "yourBio": "Ang inyong bio",
+  "saveChanges": "I-save ang mga Pagbabago",
+  "profileSaved": "Nai-save ang profile!",
+  "failedToSaveProfile": "Nabigo ang pag-save ng profile.",
+
+  "pleaseFillAllFields": "Mangyaring punan ang lahat ng field.",
+  "signInFailed": "Nabigo ang pag-sign in.",
+  "signUpFailed": "Nabigo ang pag-sign up.",
+  "googleSignInFailed": "Nabigo ang pag-sign in gamit ang Google.",
+  "errorOccurred": "May naganap na error.",
+  "pleaseEnterEmail": "Mangyaring ilagay ang inyong email address.",
+
+  "farmOnboardingStep": "Hakbang {step} ng {total}",
+  "@farmOnboardingStep": {
+    "placeholders": {
+      "step": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "tellUsAboutFarm": "Sabihin sa amin ang\ntungkol sa inyong bukid 🌱",
+  "farmProfileSubtitle": "Tinutulungan kami nitong magbigay ng tumpak na payo para sa inyong partikular na bukid.",
+  "farmSize": "Sukat ng Bukid (ektarya)",
+  "farmSizeHint": "hal. 0.5",
+  "irrigationType": "Uri ng Patubig",
+  "irrigated": "May Patubig",
+  "rainFed": "Ulan lamang",
+  "continueButton": "Magpatuloy",
+
+  "cropSetupTitle": "I-set up ang inyong\ndetalye ng pananim 🧅",
+  "cropSetupSubtitle": "Awtomatiko naming susubaybayan ang yugto ng paglaki ng inyong pananim.",
+  "onionVariety": "Uri ng Sibuyas",
+  "plantingDate": "Petsa ng Pagtatanim",
+  "selectPlantingDate": "Pumili ng petsa ng pagtatanim",
+  "currentStage": "Kasalukuyang yugto: {stage}",
+  "@currentStage": {
+    "placeholders": {
+      "stage": { "type": "String" }
+    }
+  },
+
+  "summaryTitle": "Handa na kayo! 🎉",
+  "summarySubtitle": "Narito ang buod ng inyong profile ng bukid.",
+  "farmSizeLabel": "Sukat ng Bukid",
+  "hectares": "{size} ektarya",
+  "@hectares": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "irrigationLabel": "Patubig",
+  "onionVarietyLabel": "Uri ng Sibuyas",
+  "plantingDateLabel": "Petsa ng Pagtatanim",
+  "currentStageLabel": "Kasalukuyang Yugto",
+  "startUsingAgriSmart": "Simulan ang Paggamit ng AgriSmart",
+  "failedToSaveFarmProfile": "Nabigo ang pag-save ng profile ng bukid.",
+  "pleaseSelectVarietyAndDate": "Mangyaring piliin ang uri ng sibuyas at petsa ng pagtatanim.",
+
+  "growthGermination": "Pagtubo ng Buto",
+  "growthSeedling": "Punla",
+  "growthVegetative": "Paglaki ng Dahon",
+  "growthBulbing": "Pagbuo ng Bombilya",
+  "growthMaturation": "Paghinog",
+  "growthHarvest": "Handa na para Anihin",
+  "daysAfterPlanting": "{stage} ({dap} DAP)",
+  "@daysAfterPlanting": {
+    "placeholders": {
+      "stage": { "type": "String" },
+      "dap": { "type": "int" }
+    }
+  }
+}

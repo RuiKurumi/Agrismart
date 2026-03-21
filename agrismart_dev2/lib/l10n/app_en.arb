@@ -1,0 +1,117 @@
+{
+  "@@locale": "en",
+
+  "appName": "AgriSmart",
+
+  "signInTitle": "Welcome Back!",
+  "signInSubtitle": "Use the form below to access your account.",
+  "signInButton": "Sign In",
+  "signUpTitle": "Get Started",
+  "signUpSubtitle": "Create an account by using the form below.",
+  "signUpButton": "Sign Up",
+  "forgotPassword": "Forgot Password?",
+  "forgotPasswordTitle": "Forgot Password",
+  "forgotPasswordSubtitle": "We will send you an email with a link to reset your password, please enter the email associated with your account below.",
+  "sendResetLink": "Send Reset Link",
+  "resetLinkSent": "Reset link sent! Check your email.",
+  "continueAsGuest": "Continue as Guest",
+  "useaSocialPlatform": "Use a social platform to continue",
+  "dontHaveAccount": "Don't have an account? ",
+  "createAccount": "Create Account",
+  "alreadyHaveAccount": "Already have an account? ",
+  "login": "Login",
+
+  "emailAddress": "Email Address",
+  "emailHint": "Enter your email here...",
+  "emailLabel": "Your email",
+  "emailHintReset": "Enter your email to receive a link...",
+  "password": "Password",
+  "passwordHint": "Enter your password here...",
+  "phoneNumber": "Your Phone Number",
+  "phoneHint": "Please enter a valid number...",
+  "phoneSignInTitle": "Phone Sign In",
+  "phoneSignInSubtitle": "Type in your phone number below to register.",
+  "signInWithPhone": "Sign In with Phone",
+  "confirmCodeTitle": "Confirm your Code",
+  "confirmCodeSubtitle": "This code helps keep your account safe and secure.",
+  "confirmAndContinue": "Confirm & Continue",
+  "enterSixDigitCode": "Please enter the 6-digit code.",
+  "invalidCode": "Invalid code.",
+  "verificationFailed": "Verification failed.",
+  "pleaseEnterValidPhone": "Please enter a valid phone number.",
+
+  "createOrEditProfile": "Create or Edit Profile",
+  "yourName": "Your Name",
+  "yourCity": "Your City / Municipality",
+  "selectProvince": "Select Province",
+  "yourBio": "Your bio",
+  "saveChanges": "Save Changes",
+  "profileSaved": "Profile saved!",
+  "failedToSaveProfile": "Failed to save profile.",
+
+  "pleaseFillAllFields": "Please fill in all fields.",
+  "signInFailed": "Sign in failed.",
+  "signUpFailed": "Sign up failed.",
+  "googleSignInFailed": "Google sign in failed.",
+  "errorOccurred": "Error occurred.",
+  "pleaseEnterEmail": "Please enter your email address.",
+
+  "farmOnboardingStep": "Step {step} of {total}",
+  "@farmOnboardingStep": {
+    "placeholders": {
+      "step": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "tellUsAboutFarm": "Tell us about\nyour farm 🌱",
+  "farmProfileSubtitle": "This helps us give you accurate advice for your specific farm.",
+  "farmSize": "Farm Size (hectares)",
+  "farmSizeHint": "e.g. 0.5",
+  "irrigationType": "Irrigation Type",
+  "irrigated": "Irrigated",
+  "rainFed": "Rain-fed",
+  "continueButton": "Continue",
+
+  "cropSetupTitle": "Set up your\ncrop details 🧅",
+  "cropSetupSubtitle": "We'll track your crop's growth stage automatically.",
+  "onionVariety": "Onion Variety",
+  "plantingDate": "Planting Date",
+  "selectPlantingDate": "Select planting date",
+  "currentStage": "Current stage: {stage}",
+  "@currentStage": {
+    "placeholders": {
+      "stage": { "type": "String" }
+    }
+  },
+
+  "summaryTitle": "You're all set! 🎉",
+  "summarySubtitle": "Here's a summary of your farm profile.",
+  "farmSizeLabel": "Farm Size",
+  "hectares": "{size} hectares",
+  "@hectares": {
+    "placeholders": {
+      "size": { "type": "String" }
+    }
+  },
+  "irrigationLabel": "Irrigation",
+  "onionVarietyLabel": "Onion Variety",
+  "plantingDateLabel": "Planting Date",
+  "currentStageLabel": "Current Stage",
+  "startUsingAgriSmart": "Start Using AgriSmart",
+  "failedToSaveFarmProfile": "Failed to save farm profile.",
+  "pleaseSelectVarietyAndDate": "Please select your onion variety and planting date.",
+
+  "growthGermination": "Germination",
+  "growthSeedling": "Seedling",
+  "growthVegetative": "Vegetative",
+  "growthBulbing": "Bulbing",
+  "growthMaturation": "Maturation",
+  "growthHarvest": "Ready for Harvest",
+  "daysAfterPlanting": "{stage} ({dap} DAP)",
+  "@daysAfterPlanting": {
+    "placeholders": {
+      "stage": { "type": "String" },
+      "dap": { "type": "int" }
+    }
+  }
+}

@@ -63,7 +63,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
 
   void _initGemini() {
     _geminiModel = GenerativeModel(
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.5-flash',
       apiKey: _geminiApiKey,
       systemInstruction: Content.system(_systemPrompt),
     );

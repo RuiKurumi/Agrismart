@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../../../theme/app_theme.dart';
-import '../onboarding/phone_verify_page.dart';
+import '../../l10n/app_localizations.dart';
+import '../../theme/app_theme.dart';
+import 'phone_verify_page.dart';
 
 class PhoneSignInPage extends StatefulWidget {
   const PhoneSignInPage({super.key});
@@ -21,9 +22,10 @@ class _PhoneSignInPageState extends State<PhoneSignInPage> {
   }
 
   Future<void> _signInWithPhone() async {
+    final l10n = AppLocalizations.of(context)!;
     if (_phoneController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid phone number.')),
+        SnackBar(content: Text(l10n.pleaseEnterValidPhone)),
       );
       return;
     }
@@ -37,7 +39,7 @@ class _PhoneSignInPageState extends State<PhoneSignInPage> {
         if (mounted) {
           setState(() => _isLoading = false);
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(e.message ?? 'Verification failed.')),
+            SnackBar(content: Text(e.message ?? l10n.verificationFailed)),
           );
         }
       },
@@ -61,13 +63,15 @@ class _PhoneSignInPageState extends State<PhoneSignInPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Phone Sign In'),
+        title: Text(l10n.phoneSignInTitle),
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -75,17 +79,18 @@ class _PhoneSignInPageState extends State<PhoneSignInPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 8),
-            const Text(
-              'Type in your phone number below to register.',
-              style: TextStyle(fontSize: 14, color: AppTheme.textGrey),
+            Text(
+              l10n.phoneSignInSubtitle,
+              style:
+                  const TextStyle(fontSize: 14, color: AppTheme.textGrey),
             ),
             const SizedBox(height: 24),
             TextFormField(
               controller: _phoneController,
               keyboardType: TextInputType.phone,
-              decoration: const InputDecoration(
-                labelText: 'Your Phone Number',
-                hintText: 'Please enter a valid number...',
+              decoration: InputDecoration(
+                labelText: l10n.phoneNumber,
+                hintText: l10n.phoneHint,
               ),
             ),
             const SizedBox(height: 24),
@@ -98,7 +103,7 @@ class _PhoneSignInPageState extends State<PhoneSignInPage> {
                       child: CircularProgressIndicator(
                           color: Colors.white, strokeWidth: 2),
                     )
-                  : const Text('Sign In with Phone'),
+                  : Text(l10n.signInWithPhone),
             ),
           ],
         ),
