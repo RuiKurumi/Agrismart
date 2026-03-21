@@ -1,8 +1,6 @@
 {
   "@@locale": "tl",
-
   "appName": "AgriSmart",
-
   "signInTitle": "Maligayang Pagbabalik!",
   "signInSubtitle": "Gamitin ang form sa ibaba para ma-access ang inyong account.",
   "signInButton": "Mag-sign In",
@@ -20,7 +18,6 @@
   "createAccount": "Gumawa ng Account",
   "alreadyHaveAccount": "Mayroon nang account? ",
   "login": "Mag-login",
-
   "emailAddress": "Email Address",
   "emailHint": "Ilagay ang inyong email dito...",
   "emailLabel": "Ang inyong email",
@@ -39,7 +36,6 @@
   "invalidCode": "Hindi wastong code.",
   "verificationFailed": "Nabigo ang pag-verify.",
   "pleaseEnterValidPhone": "Mangyaring maglagay ng wastong numero ng telepono.",
-
   "createOrEditProfile": "Gumawa o I-edit ang Profile",
   "yourName": "Ang Inyong Pangalan",
   "yourCity": "Ang Inyong Lungsod / Munisipyo",
@@ -48,19 +44,21 @@
   "saveChanges": "I-save ang mga Pagbabago",
   "profileSaved": "Nai-save ang profile!",
   "failedToSaveProfile": "Nabigo ang pag-save ng profile.",
-
   "pleaseFillAllFields": "Mangyaring punan ang lahat ng field.",
   "signInFailed": "Nabigo ang pag-sign in.",
   "signUpFailed": "Nabigo ang pag-sign up.",
   "googleSignInFailed": "Nabigo ang pag-sign in gamit ang Google.",
   "errorOccurred": "May naganap na error.",
   "pleaseEnterEmail": "Mangyaring ilagay ang inyong email address.",
-
   "farmOnboardingStep": "Hakbang {step} ng {total}",
   "@farmOnboardingStep": {
     "placeholders": {
-      "step": { "type": "int" },
-      "total": { "type": "int" }
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "tellUsAboutFarm": "Sabihin sa amin ang\ntungkol sa inyong bukid 🌱",
@@ -71,7 +69,6 @@
   "irrigated": "May Patubig",
   "rainFed": "Ulan lamang",
   "continueButton": "Magpatuloy",
-
   "cropSetupTitle": "I-set up ang inyong\ndetalye ng pananim 🧅",
   "cropSetupSubtitle": "Awtomatiko naming susubaybayan ang yugto ng paglaki ng inyong pananim.",
   "onionVariety": "Uri ng Sibuyas",
@@ -80,17 +77,20 @@
   "currentStage": "Kasalukuyang yugto: {stage}",
   "@currentStage": {
     "placeholders": {
-      "stage": { "type": "String" }
+      "stage": {
+        "type": "String"
+      }
     }
   },
-
   "summaryTitle": "Handa na kayo! 🎉",
   "summarySubtitle": "Narito ang buod ng inyong profile ng bukid.",
   "farmSizeLabel": "Sukat ng Bukid",
   "hectares": "{size} ektarya",
   "@hectares": {
     "placeholders": {
-      "size": { "type": "String" }
+      "size": {
+        "type": "String"
+      }
     }
   },
   "irrigationLabel": "Patubig",
@@ -100,7 +100,6 @@
   "startUsingAgriSmart": "Simulan ang Paggamit ng AgriSmart",
   "failedToSaveFarmProfile": "Nabigo ang pag-save ng profile ng bukid.",
   "pleaseSelectVarietyAndDate": "Mangyaring piliin ang uri ng sibuyas at petsa ng pagtatanim.",
-
   "growthGermination": "Pagtubo ng Buto",
   "growthSeedling": "Punla",
   "growthVegetative": "Paglaki ng Dahon",
@@ -110,8 +109,35 @@
   "daysAfterPlanting": "{stage} ({dap} DAP)",
   "@daysAfterPlanting": {
     "placeholders": {
-      "stage": { "type": "String" },
-      "dap": { "type": "int" }
+      "stage": {
+        "type": "String"
+      },
+      "dap": {
+        "type": "int"
+      }
     }
-  }
+  },
+  "settingsTitle": "Ang Inyong Profile",
+  "settingsSubtitle": "Nasa ibaba ang inyong mga setting",
+  "settingsAccount": "Account",
+  "settingsGeneral": "Pangkalahatan",
+  "settingsEditProfile": "I-edit ang Profile",
+  "settingsSupport": "Suporta",
+  "settingsTerms": "Mga Tuntunin ng Serbisyo",
+  "settingsInvite": "Mag-imbita ng mga Kaibigan",
+  "settingsAdvanced": "Mga Advanced na Setting",
+  "settingsSignOut": "Mag-sign Out",
+  "advancedSettingsTitle": "Mga Advanced na Setting",
+  "advancedAppearance": "Hitsura",
+  "advancedDarkMode": "Dark Mode",
+  "advancedDarkModeSubtitle": "Lumipat sa pagitan ng maliwanag at madilim na tema",
+  "advancedLanguage": "Wika",
+  "advancedLanguageSubtitle": "Piliin ang inyong gustong wika",
+  "advancedAI": "AI Model",
+  "advancedAISubtitle": "Awtomatikong nagpapalit batay sa koneksyon",
+  "advancedAILoadModel": "Mag-load ng Local na Model",
+  "advancedAIModelLoaded": "Na-load ang lokal na modelo ✅",
+  "advancedAIModelNotLoaded": "Walang lokal na modelo na na-load",
+  "languageEnglish": "Ingles",
+  "languageTagalog": "Filipino (Tagalog)"
 }

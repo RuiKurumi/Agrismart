@@ -276,4 +276,74 @@ class AppLocalizationsTl extends AppLocalizations {
   String daysAfterPlanting(String stage, int dap) {
     return '$stage ($dap DAP)';
   }
+
+  @override
+  String get settingsTitle => 'Ang Inyong Profile';
+
+  @override
+  String get settingsSubtitle => 'Nasa ibaba ang inyong mga setting';
+
+  @override
+  String get settingsAccount => 'Account';
+
+  @override
+  String get settingsGeneral => 'Pangkalahatan';
+
+  @override
+  String get settingsEditProfile => 'I-edit ang Profile';
+
+  @override
+  String get settingsSupport => 'Suporta';
+
+  @override
+  String get settingsTerms => 'Mga Tuntunin ng Serbisyo';
+
+  @override
+  String get settingsInvite => 'Mag-imbita ng mga Kaibigan';
+
+  @override
+  String get settingsAdvanced => 'Mga Advanced na Setting';
+
+  @override
+  String get settingsSignOut => 'Mag-sign Out';
+
+  @override
+  String get advancedSettingsTitle => 'Mga Advanced na Setting';
+
+  @override
+  String get advancedAppearance => 'Hitsura';
+
+  @override
+  String get advancedDarkMode => 'Dark Mode';
+
+  @override
+  String get advancedDarkModeSubtitle =>
+      'Lumipat sa pagitan ng maliwanag at madilim na tema';
+
+  @override
+  String get advancedLanguage => 'Wika';
+
+  @override
+  String get advancedLanguageSubtitle => 'Piliin ang inyong gustong wika';
+
+  @override
+  String get advancedAI => 'AI Model';
+
+  @override
+  String get advancedAISubtitle => 'Awtomatikong nagpapalit batay sa koneksyon';
+
+  @override
+  String get advancedAILoadModel => 'Mag-load ng Local na Model';
+
+  @override
+  String get advancedAIModelLoaded => 'Na-load ang lokal na modelo ✅';
+
+  @override
+  String get advancedAIModelNotLoaded => 'Walang lokal na modelo na na-load';
+
+  @override
+  String get languageEnglish => 'Ingles';
+
+  @override
+  String get languageTagalog => 'Filipino (Tagalog)';
 }

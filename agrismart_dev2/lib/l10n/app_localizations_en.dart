@@ -270,4 +270,74 @@ class AppLocalizationsEn extends AppLocalizations {
   String daysAfterPlanting(String stage, int dap) {
     return '$stage ($dap DAP)';
   }
+
+  @override
+  String get settingsTitle => 'Your Profile';
+
+  @override
+  String get settingsSubtitle => 'Below are your settings';
+
+  @override
+  String get settingsAccount => 'Account';
+
+  @override
+  String get settingsGeneral => 'General';
+
+  @override
+  String get settingsEditProfile => 'Edit Profile';
+
+  @override
+  String get settingsSupport => 'Support';
+
+  @override
+  String get settingsTerms => 'Terms of Service';
+
+  @override
+  String get settingsInvite => 'Invite Friends';
+
+  @override
+  String get settingsAdvanced => 'Advanced Settings';
+
+  @override
+  String get settingsSignOut => 'Sign Out';
+
+  @override
+  String get advancedSettingsTitle => 'Advanced Settings';
+
+  @override
+  String get advancedAppearance => 'Appearance';
+
+  @override
+  String get advancedDarkMode => 'Dark Mode';
+
+  @override
+  String get advancedDarkModeSubtitle => 'Switch between light and dark theme';
+
+  @override
+  String get advancedLanguage => 'Language';
+
+  @override
+  String get advancedLanguageSubtitle => 'Choose your preferred language';
+
+  @override
+  String get advancedAI => 'AI Model';
+
+  @override
+  String get advancedAISubtitle =>
+      'Switches automatically based on connectivity';
+
+  @override
+  String get advancedAILoadModel => 'Load Local Model';
+
+  @override
+  String get advancedAIModelLoaded => 'Local model loaded ✅';
+
+  @override
+  String get advancedAIModelNotLoaded => 'No local model loaded';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get languageTagalog => 'Filipino (Tagalog)';
 }

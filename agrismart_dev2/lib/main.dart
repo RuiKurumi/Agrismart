@@ -33,20 +33,36 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool _isDarkMode = false;
+  Locale _locale = const Locale('en');
 
   void toggleDarkMode(bool value) {
     setState(() => _isDarkMode = value);
   }
 
+  void setLocale(Locale locale){
+    setState(()=> _locale = locale);
+  }
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'AgriSmart',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.theme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: _isDarkMode ? ThemeMode.dark : ThemeMode.light,
-      home: const AuthGate(),
-    );
+  title: 'AgriSmart',
+  debugShowCheckedModeBanner: false,
+  theme: AppTheme.theme,
+  darkTheme: AppTheme.darkTheme,
+  themeMode: _isDarkMode ? ThemeMode.dark : ThemeMode.light,
+  // Add these:
+  localizationsDelegates: const [
+    AppLocalizations.delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+  ],
+  supportedLocales: const [
+    Locale('en'),
+    Locale('tl'),
+  ],
+  home: const AuthGate(),
+  );
   }
 }

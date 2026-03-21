@@ -595,6 +595,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{stage} ({dap} DAP)'**
   String daysAfterPlanting(String stage, int dap);
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Profile'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Below are your settings'**
+  String get settingsSubtitle;
+
+  /// No description provided for @settingsAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get settingsAccount;
+
+  /// No description provided for @settingsGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get settingsGeneral;
+
+  /// No description provided for @settingsEditProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get settingsEditProfile;
+
+  /// No description provided for @settingsSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get settingsSupport;
+
+  /// No description provided for @settingsTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get settingsTerms;
+
+  /// No description provided for @settingsInvite.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite Friends'**
+  String get settingsInvite;
+
+  /// No description provided for @settingsAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced Settings'**
+  String get settingsAdvanced;
+
+  /// No description provided for @settingsSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Out'**
+  String get settingsSignOut;
+
+  /// No description provided for @advancedSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced Settings'**
+  String get advancedSettingsTitle;
+
+  /// No description provided for @advancedAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get advancedAppearance;
+
+  /// No description provided for @advancedDarkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Mode'**
+  String get advancedDarkMode;
+
+  /// No description provided for @advancedDarkModeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch between light and dark theme'**
+  String get advancedDarkModeSubtitle;
+
+  /// No description provided for @advancedLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get advancedLanguage;
+
+  /// No description provided for @advancedLanguageSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your preferred language'**
+  String get advancedLanguageSubtitle;
+
+  /// No description provided for @advancedAI.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Model'**
+  String get advancedAI;
+
+  /// No description provided for @advancedAISubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Switches automatically based on connectivity'**
+  String get advancedAISubtitle;
+
+  /// No description provided for @advancedAILoadModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Load Local Model'**
+  String get advancedAILoadModel;
+
+  /// No description provided for @advancedAIModelLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Local model loaded ✅'**
+  String get advancedAIModelLoaded;
+
+  /// No description provided for @advancedAIModelNotLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'No local model loaded'**
+  String get advancedAIModelNotLoaded;
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// No description provided for @languageTagalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Filipino (Tagalog)'**
+  String get languageTagalog;
 }
 
 class _AppLocalizationsDelegate

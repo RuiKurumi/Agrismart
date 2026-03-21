@@ -1,8 +1,6 @@
 {
   "@@locale": "en",
-
   "appName": "AgriSmart",
-
   "signInTitle": "Welcome Back!",
   "signInSubtitle": "Use the form below to access your account.",
   "signInButton": "Sign In",
@@ -20,7 +18,6 @@
   "createAccount": "Create Account",
   "alreadyHaveAccount": "Already have an account? ",
   "login": "Login",
-
   "emailAddress": "Email Address",
   "emailHint": "Enter your email here...",
   "emailLabel": "Your email",
@@ -39,7 +36,6 @@
   "invalidCode": "Invalid code.",
   "verificationFailed": "Verification failed.",
   "pleaseEnterValidPhone": "Please enter a valid phone number.",
-
   "createOrEditProfile": "Create or Edit Profile",
   "yourName": "Your Name",
   "yourCity": "Your City / Municipality",
@@ -48,19 +44,21 @@
   "saveChanges": "Save Changes",
   "profileSaved": "Profile saved!",
   "failedToSaveProfile": "Failed to save profile.",
-
   "pleaseFillAllFields": "Please fill in all fields.",
   "signInFailed": "Sign in failed.",
   "signUpFailed": "Sign up failed.",
   "googleSignInFailed": "Google sign in failed.",
   "errorOccurred": "Error occurred.",
   "pleaseEnterEmail": "Please enter your email address.",
-
   "farmOnboardingStep": "Step {step} of {total}",
   "@farmOnboardingStep": {
     "placeholders": {
-      "step": { "type": "int" },
-      "total": { "type": "int" }
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "tellUsAboutFarm": "Tell us about\nyour farm 🌱",
@@ -71,7 +69,6 @@
   "irrigated": "Irrigated",
   "rainFed": "Rain-fed",
   "continueButton": "Continue",
-
   "cropSetupTitle": "Set up your\ncrop details 🧅",
   "cropSetupSubtitle": "We'll track your crop's growth stage automatically.",
   "onionVariety": "Onion Variety",
@@ -80,17 +77,20 @@
   "currentStage": "Current stage: {stage}",
   "@currentStage": {
     "placeholders": {
-      "stage": { "type": "String" }
+      "stage": {
+        "type": "String"
+      }
     }
   },
-
   "summaryTitle": "You're all set! 🎉",
   "summarySubtitle": "Here's a summary of your farm profile.",
   "farmSizeLabel": "Farm Size",
   "hectares": "{size} hectares",
   "@hectares": {
     "placeholders": {
-      "size": { "type": "String" }
+      "size": {
+        "type": "String"
+      }
     }
   },
   "irrigationLabel": "Irrigation",
@@ -100,7 +100,6 @@
   "startUsingAgriSmart": "Start Using AgriSmart",
   "failedToSaveFarmProfile": "Failed to save farm profile.",
   "pleaseSelectVarietyAndDate": "Please select your onion variety and planting date.",
-
   "growthGermination": "Germination",
   "growthSeedling": "Seedling",
   "growthVegetative": "Vegetative",
@@ -110,8 +109,35 @@
   "daysAfterPlanting": "{stage} ({dap} DAP)",
   "@daysAfterPlanting": {
     "placeholders": {
-      "stage": { "type": "String" },
-      "dap": { "type": "int" }
+      "stage": {
+        "type": "String"
+      },
+      "dap": {
+        "type": "int"
+      }
     }
-  }
+  },
+  "settingsTitle": "Your Profile",
+  "settingsSubtitle": "Below are your settings",
+  "settingsAccount": "Account",
+  "settingsGeneral": "General",
+  "settingsEditProfile": "Edit Profile",
+  "settingsSupport": "Support",
+  "settingsTerms": "Terms of Service",
+  "settingsInvite": "Invite Friends",
+  "settingsAdvanced": "Advanced Settings",
+  "settingsSignOut": "Sign Out",
+  "advancedSettingsTitle": "Advanced Settings",
+  "advancedAppearance": "Appearance",
+  "advancedDarkMode": "Dark Mode",
+  "advancedDarkModeSubtitle": "Switch between light and dark theme",
+  "advancedLanguage": "Language",
+  "advancedLanguageSubtitle": "Choose your preferred language",
+  "advancedAI": "AI Model",
+  "advancedAISubtitle": "Switches automatically based on connectivity",
+  "advancedAILoadModel": "Load Local Model",
+  "advancedAIModelLoaded": "Local model loaded ✅",
+  "advancedAIModelNotLoaded": "No local model loaded",
+  "languageEnglish": "English",
+  "languageTagalog": "Filipino (Tagalog)"
 }

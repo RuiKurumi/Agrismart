@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../l10n/app_localizations.dart';
 import 'onboarding/create_profile_page.dart';
-import '../main.dart';
+import './advanced_settings.dart';
 import './onboarding/sign_in_page.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -13,7 +14,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool _darkMode = false;
   String? _photoUrl;
 
   @override
@@ -58,6 +58,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final user = FirebaseAuth.instance.currentUser;
     final displayName = user?.displayName?.isNotEmpty == true
         ? user!.displayName!
@@ -77,63 +78,47 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header
+                // Header — avatar + name/email only, no button
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 28,
-                          backgroundColor: const Color(0xFF2E7D32),
-                          backgroundImage: _photoUrl != null
-                              ? NetworkImage(_photoUrl!)
-                              : null,
-                          child: _photoUrl == null
-                              ? Text(
-                                  displayName[0].toUpperCase(),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )
-                              : null,
-                        ),
-                        const SizedBox(width: 12),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              displayName,
+                    CircleAvatar(
+                      radius: 28,
+                      backgroundColor: const Color(0xFF2E7D32),
+                      backgroundImage: _photoUrl != null
+                          ? NetworkImage(_photoUrl!)
+                          : null,
+                      child: _photoUrl == null
+                          ? Text(
+                              displayName[0].toUpperCase(),
                               style: const TextStyle(
-                                fontSize: 20,
+                                color: Colors.white,
+                                fontSize: 22,
                                 fontWeight: FontWeight.bold,
                               ),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              user?.email ?? '',
-                              style: const TextStyle(
-                                  color: Colors.grey, fontSize: 12),
-                            ),
-                          ],
-                        ),
-                      ],
+                            )
+                          : null,
                     ),
-                    ElevatedButton.icon(
-                      onPressed: _goToEditProfile,
-                      icon: const Icon(Icons.edit, size: 16),
-                      label: const Text('Edit Profile'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2E7D32),
-                        foregroundColor: Colors.white,
-                        minimumSize: Size.zero,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            displayName,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            user?.email ?? '',
+                            style: const TextStyle(
+                                color: Colors.grey, fontSize: 12),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -141,8 +126,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 const SizedBox(height: 24),
 
                 // Account section
-                const Text('Account',
-                    style: TextStyle(
+                Text(l10n.settingsAccount,
+                    style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                         color: Colors.grey)),
@@ -154,37 +139,20 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   child: Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 4),
-                        child: Row(
-                          mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('Switch to Dark Mode',
-                                style: TextStyle(fontSize: 14)),
-                            Row(
-                              children: [
-                                Switch(
-                                  value: _darkMode,
-                                  onChanged: (v) {
-                                    setState(() => _darkMode = v);
-                                    MyApp.of(context)?.toggleDarkMode(v);
-                                  },
-                                  activeColor: const Color(0xFF2E7D32),
-                                ),
-                                const Icon(Icons.bedtime_outlined,
-                                    size: 20, color: Colors.grey),
-                              ],
-                            ),
-                          ],
-                        ),
+                      _SettingsItem(
+                        icon: Icons.person_outline,
+                        label: l10n.settingsEditProfile,
+                        onTap: _goToEditProfile,
                       ),
                       const Divider(height: 1),
                       _SettingsItem(
-                        icon: Icons.person_outline,
-                        label: 'Edit Profile',
-                        onTap: _goToEditProfile,
+                        icon: Icons.tune,
+                        label: l10n.settingsAdvanced,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const AdvancedSettingsPage()),
+                        ),
                       ),
                     ],
                   ),
@@ -192,8 +160,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 const SizedBox(height: 24),
 
                 // General section
-                const Text('General',
-                    style: TextStyle(
+                Text(l10n.settingsGeneral,
+                    style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                         color: Colors.grey)),
@@ -207,19 +175,19 @@ class _SettingsPageState extends State<SettingsPage> {
                     children: [
                       _SettingsItem(
                         icon: Icons.help_outline,
-                        label: 'Support',
+                        label: l10n.settingsSupport,
                         onTap: () {},
                       ),
                       const Divider(height: 1),
                       _SettingsItem(
                         icon: Icons.info_outline,
-                        label: 'Terms of Service',
+                        label: l10n.settingsTerms,
                         onTap: () {},
                       ),
                       const Divider(height: 1),
                       _SettingsItem(
                         icon: Icons.ios_share,
-                        label: 'Invite Friends',
+                        label: l10n.settingsInvite,
                         onTap: () {},
                       ),
                     ],
@@ -233,8 +201,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   child: OutlinedButton.icon(
                     onPressed: _signOut,
                     icon: const Icon(Icons.logout, color: Colors.red),
-                    label: const Text('Sign Out',
-                        style: TextStyle(color: Colors.red)),
+                    label: Text(l10n.settingsSignOut,
+                        style: const TextStyle(color: Colors.red)),
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: Colors.red),
                       minimumSize: const Size(double.infinity, 48),
