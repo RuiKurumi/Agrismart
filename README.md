@@ -1,6 +1,6 @@
 # 🧅 AgriSmart
 
-A Decision Support System (DSS) for Filipino onion farmers, combining real-time weather data, AI-powered advisory, and farm management tools into a mobile-first platform.
+A Decision Support System (DSS) for Filipino onion farmers, combining real-time weather data, AI-powered advisory, and farm management tools into a mobile-first platform. Following the Agile Development model, this repository is a representation of our progress in our Capstone Project.
 
 ---
 
@@ -27,7 +27,7 @@ Agrismart/
 - **Farm Onboarding** — Set up farm size, irrigation type, onion variety, and planting date
 - **Farm Management** — Add, edit, delete multiple fields with growth stage tracking
 - **Home Dashboard** — Real-time weather via Open-Meteo API, auto-generated alerts, 5-day forecast
-- **Maya AI Chatbot** — Powered by Gemini 1.5 Flash (online) with local GGUF model fallback (offline)
+- **Maya AI Chatbot** — Powered by Gemini 2.5 Flash (online) with local GGUF model fallback (offline)
 - **Localization** — English and Filipino (Tagalog) support
 - **Dark Mode** — Full app-wide dark theme support
 - **Profile Management** — Photo upload, province/municipality, bio
@@ -127,23 +127,10 @@ flutter_localizations, intl
 
 ---
 
-## 🌐 Deployment
-
-The admin panel is designed for deployment on **Render**:
-
-1. Push to GitHub
-2. Create a new **Web Service** on Render
-3. Connect the `Agrismart-ADMIN` folder
-4. Set build command: `npm install && npm run build`
-5. Set start command: `npm start`
-6. Add environment variables in Render dashboard
-
----
-
 ## 📄 License
 
 This project is developed as part of an academic requirement. All rights reserved.
 
 ---
 
-*Built with 🧅 for Filipino farmers.*
+*Built for Filipino farmers.*
