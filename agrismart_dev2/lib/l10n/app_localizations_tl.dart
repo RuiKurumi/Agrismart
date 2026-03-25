@@ -182,7 +182,7 @@ class AppLocalizationsTl extends AppLocalizations {
   String get farmSize => 'Sukat ng Bukid (ektarya)';
 
   @override
-  String get farmSizeHint => 'hal. 0.5';
+  String get farmSizeHint => 'Sukat sa ektarya (hal. 0.5)';
 
   @override
   String get irrigationType => 'Uri ng Patubig';
@@ -317,8 +317,7 @@ class AppLocalizationsTl extends AppLocalizations {
   String get advancedDarkMode => 'Dark Mode';
 
   @override
-  String get advancedDarkModeSubtitle =>
-      'Lumipat sa pagitan ng maliwanag at madilim na tema';
+  String get advancedDarkModeSubtitle => 'Piliin ang light or dark na tema';
 
   @override
   String get advancedLanguage => 'Wika';
@@ -346,4 +345,214 @@ class AppLocalizationsTl extends AppLocalizations {
 
   @override
   String get languageTagalog => 'Filipino (Tagalog)';
+
+  @override
+  String homeWelcome(String name) {
+    return 'Maligayang pagdating $name';
+  }
+
+  @override
+  String get homeOverview => 'Narito ang inyong Pangkalahatang-tanaw ngayon';
+
+  @override
+  String get homeCurrentConditions => 'Kasalukuyang Kondisyon';
+
+  @override
+  String get homeFiveDayForecast => '5-Araw na Hula';
+
+  @override
+  String get homeLoadingForecast => 'Nilo-load ang hula...';
+
+  @override
+  String get homeYourAlerts => 'Ang Inyong mga Alerto';
+
+  @override
+  String get homeRegionalAlerts => 'Mga Rehiyonal na Alerto';
+
+  @override
+  String get homeNoActiveAlerts => 'Walang aktibong alerto ✅';
+
+  @override
+  String get homeSignInAlerts =>
+      'Mag-sign in para makita ang inyong mga alerto';
+
+  @override
+  String get homeGuidesArticles => 'Mga Gabay at Artikulo';
+
+  @override
+  String get homeNoGuides => 'Wala pang mga gabay.';
+
+  @override
+  String get homeFarmManagement => 'Pamamahala ng Bukid';
+
+  @override
+  String get homeFarmManagementSubtitle =>
+      'Pamahalaan ang inyong mga bukid at subaybayan ang mga yugto ng paglaki';
+
+  @override
+  String get homeHumidity => 'Halumigmig %';
+
+  @override
+  String get homeWind => 'Hangin km/h';
+
+  @override
+  String get homeRain => 'Ulan mm';
+
+  @override
+  String get farmManagementTitle => 'Pamamahala ng Bukid';
+
+  @override
+  String get farmAddField => 'Magdagdag ng Bukid';
+
+  @override
+  String get farmTotalFields => 'Kabuuang Bukid';
+
+  @override
+  String get farmTotalArea => 'Kabuuang Lugar';
+
+  @override
+  String get farmActive => 'Aktibo';
+
+  @override
+  String get farmNoFields => 'Wala pang mga bukid';
+
+  @override
+  String get farmNoFieldsSubtitle =>
+      'Pindutin ang pindutan sa ibaba para idagdag ang inyong unang bukid.';
+
+  @override
+  String get farmEditField => 'I-edit ang Bukid';
+
+  @override
+  String get farmAddNewField => 'Magdagdag ng Bagong Bukid';
+
+  @override
+  String get farmFieldName => 'Pangalan ng bukid (hal. Bukid A)';
+
+  @override
+  String get farmSelectVariety => 'Pumili ng uri ng sibuyas';
+
+  @override
+  String get farmSelectIrrigation => 'Pumili ng uri ng patubig';
+
+  @override
+  String get farmSelectPlantingDate => 'Pumili ng petsa ng pagtatanim';
+
+  @override
+  String get farmSaveChanges => 'I-save ang mga Pagbabago';
+
+  @override
+  String get farmAddFieldButton => 'Magdagdag ng Bukid';
+
+  @override
+  String get farmFailedToSave => 'Nabigo ang pag-save ng bukid';
+
+  @override
+  String get farmEdit => 'I-edit';
+
+  @override
+  String get farmMarkHarvested => 'Markahan bilang Naani';
+
+  @override
+  String get farmDelete => 'Burahin';
+
+  @override
+  String get farmDeleteTitle => 'Burahin ang Bukid';
+
+  @override
+  String farmDeleteConfirm(String name) {
+    return 'Sigurado ka bang gusto mong burahin ang \"$name\"?';
+  }
+
+  @override
+  String get farmHarvested => 'Naani na ✅';
+
+  @override
+  String get farmPlanted => 'Itanim';
+
+  @override
+  String get farmHarvestLabel => 'Pag-aani';
+
+  @override
+  String get farmGermination => 'Pagtubo ng Buto';
+
+  @override
+  String get farmSeedling => 'Punla';
+
+  @override
+  String get farmVegetative => 'Paglaki ng Dahon';
+
+  @override
+  String get farmBulbing => 'Pagbuo ng Bombilya';
+
+  @override
+  String get farmMaturation => 'Paghinog';
+
+  @override
+  String get farmReadyForHarvest => 'Handa na para Anihin';
+
+  @override
+  String get chatbotOnline => 'Online · Gemini';
+
+  @override
+  String get chatbotOffline => 'Offline · Lokal na Modelo';
+
+  @override
+  String get chatbotModelLoaded => 'Na-load ang modelo';
+
+  @override
+  String get chatbotLoadLocalModel => 'Mag-load ng lokal na modelo';
+
+  @override
+  String get chatbotClickAddFile => 'I-click ang Magdagdag ng File';
+
+  @override
+  String get chatbotAddFile => 'Magdagdag ng File';
+
+  @override
+  String get chatbotAskMaya => 'Magtanong kay Maya...';
+
+  @override
+  String get chatbotTyping => 'Nagta-type si Maya...';
+
+  @override
+  String get chatbotNoResponse => 'Paumanhin, walang tugon.';
+
+  @override
+  String get chatbotOfflineNoModel =>
+      'Offline ako at walang lokal na modelo na na-load. Pindutin ang icon sa kanang itaas para mag-load ng GGUF modelo.';
+
+  @override
+  String get chatbotError => 'May nangyaring mali. Pakisubukan muli.';
+
+  @override
+  String get chatbotLoadModelTitle => 'Mag-load ng Lokal na Modelo';
+
+  @override
+  String get chatbotLoadModelHint => '/storage/emulated/0/models/model.gguf';
+
+  @override
+  String get chatbotLoadModelDesc =>
+      'Ilagay ang buong landas sa inyong GGUF model file:';
+
+  @override
+  String get chatbotModelLoadedSnack => 'Na-load ang lokal na modelo!';
+
+  @override
+  String get chatbotModelFailed => 'Nabigo';
+
+  @override
+  String get cancel => 'Kanselahin';
+
+  @override
+  String get load => 'I-load';
+
+  @override
+  String get navHome => 'Tahanan';
+
+  @override
+  String get navCompOnion => 'CompOnion';
+
+  @override
+  String get navProfile => 'Profile';
 }

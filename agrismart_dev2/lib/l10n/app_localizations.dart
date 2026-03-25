@@ -425,7 +425,7 @@ abstract class AppLocalizations {
   /// No description provided for @farmSizeHint.
   ///
   /// In en, this message translates to:
-  /// **'e.g. 0.5'**
+  /// **'Size in hectares (e.g. 0.5)'**
   String get farmSizeHint;
 
   /// No description provided for @irrigationType.
@@ -733,6 +733,408 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Filipino (Tagalog)'**
   String get languageTagalog;
+
+  /// No description provided for @homeWelcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome {name}'**
+  String homeWelcome(String name);
+
+  /// No description provided for @homeOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Here\'s your Overview for today'**
+  String get homeOverview;
+
+  /// No description provided for @homeCurrentConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Conditions'**
+  String get homeCurrentConditions;
+
+  /// No description provided for @homeFiveDayForecast.
+  ///
+  /// In en, this message translates to:
+  /// **'5 Day Forecast'**
+  String get homeFiveDayForecast;
+
+  /// No description provided for @homeLoadingForecast.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading forecast...'**
+  String get homeLoadingForecast;
+
+  /// No description provided for @homeYourAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Alerts'**
+  String get homeYourAlerts;
+
+  /// No description provided for @homeRegionalAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Regional Alerts'**
+  String get homeRegionalAlerts;
+
+  /// No description provided for @homeNoActiveAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'No active alerts ✅'**
+  String get homeNoActiveAlerts;
+
+  /// No description provided for @homeSignInAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to see your alerts'**
+  String get homeSignInAlerts;
+
+  /// No description provided for @homeGuidesArticles.
+  ///
+  /// In en, this message translates to:
+  /// **'Guides & Articles'**
+  String get homeGuidesArticles;
+
+  /// No description provided for @homeNoGuides.
+  ///
+  /// In en, this message translates to:
+  /// **'No guides available yet.'**
+  String get homeNoGuides;
+
+  /// No description provided for @homeFarmManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Farm Management'**
+  String get homeFarmManagement;
+
+  /// No description provided for @homeFarmManagementSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your fields and track growth stages'**
+  String get homeFarmManagementSubtitle;
+
+  /// No description provided for @homeHumidity.
+  ///
+  /// In en, this message translates to:
+  /// **'Humidity %'**
+  String get homeHumidity;
+
+  /// No description provided for @homeWind.
+  ///
+  /// In en, this message translates to:
+  /// **'Wind km/h'**
+  String get homeWind;
+
+  /// No description provided for @homeRain.
+  ///
+  /// In en, this message translates to:
+  /// **'Rain mm'**
+  String get homeRain;
+
+  /// No description provided for @farmManagementTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Farm Management'**
+  String get farmManagementTitle;
+
+  /// No description provided for @farmAddField.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Field'**
+  String get farmAddField;
+
+  /// No description provided for @farmTotalFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Fields'**
+  String get farmTotalFields;
+
+  /// No description provided for @farmTotalArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Area'**
+  String get farmTotalArea;
+
+  /// No description provided for @farmActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get farmActive;
+
+  /// No description provided for @farmNoFields.
+  ///
+  /// In en, this message translates to:
+  /// **'No fields yet'**
+  String get farmNoFields;
+
+  /// No description provided for @farmNoFieldsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the button below to add your first field.'**
+  String get farmNoFieldsSubtitle;
+
+  /// No description provided for @farmEditField.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Field'**
+  String get farmEditField;
+
+  /// No description provided for @farmAddNewField.
+  ///
+  /// In en, this message translates to:
+  /// **'Add New Field'**
+  String get farmAddNewField;
+
+  /// No description provided for @farmFieldName.
+  ///
+  /// In en, this message translates to:
+  /// **'Field name (e.g. Field A)'**
+  String get farmFieldName;
+
+  /// No description provided for @farmSelectVariety.
+  ///
+  /// In en, this message translates to:
+  /// **'Select onion variety'**
+  String get farmSelectVariety;
+
+  /// No description provided for @farmSelectIrrigation.
+  ///
+  /// In en, this message translates to:
+  /// **'Select irrigation type'**
+  String get farmSelectIrrigation;
+
+  /// No description provided for @farmSelectPlantingDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select planting date'**
+  String get farmSelectPlantingDate;
+
+  /// No description provided for @farmSaveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get farmSaveChanges;
+
+  /// No description provided for @farmAddFieldButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Field'**
+  String get farmAddFieldButton;
+
+  /// No description provided for @farmFailedToSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save field'**
+  String get farmFailedToSave;
+
+  /// No description provided for @farmEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get farmEdit;
+
+  /// No description provided for @farmMarkHarvested.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as Harvested'**
+  String get farmMarkHarvested;
+
+  /// No description provided for @farmDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get farmDelete;
+
+  /// No description provided for @farmDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Field'**
+  String get farmDeleteTitle;
+
+  /// No description provided for @farmDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete \"{name}\"?'**
+  String farmDeleteConfirm(String name);
+
+  /// No description provided for @farmHarvested.
+  ///
+  /// In en, this message translates to:
+  /// **'Harvested ✅'**
+  String get farmHarvested;
+
+  /// No description provided for @farmPlanted.
+  ///
+  /// In en, this message translates to:
+  /// **'Planted'**
+  String get farmPlanted;
+
+  /// No description provided for @farmHarvestLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Harvest'**
+  String get farmHarvestLabel;
+
+  /// No description provided for @farmGermination.
+  ///
+  /// In en, this message translates to:
+  /// **'Germination'**
+  String get farmGermination;
+
+  /// No description provided for @farmSeedling.
+  ///
+  /// In en, this message translates to:
+  /// **'Seedling'**
+  String get farmSeedling;
+
+  /// No description provided for @farmVegetative.
+  ///
+  /// In en, this message translates to:
+  /// **'Vegetative'**
+  String get farmVegetative;
+
+  /// No description provided for @farmBulbing.
+  ///
+  /// In en, this message translates to:
+  /// **'Bulbing'**
+  String get farmBulbing;
+
+  /// No description provided for @farmMaturation.
+  ///
+  /// In en, this message translates to:
+  /// **'Maturation'**
+  String get farmMaturation;
+
+  /// No description provided for @farmReadyForHarvest.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready for Harvest'**
+  String get farmReadyForHarvest;
+
+  /// No description provided for @chatbotOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Online · Gemini'**
+  String get chatbotOnline;
+
+  /// No description provided for @chatbotOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline · Local Model'**
+  String get chatbotOffline;
+
+  /// No description provided for @chatbotModelLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Model loaded'**
+  String get chatbotModelLoaded;
+
+  /// No description provided for @chatbotLoadLocalModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Load local model'**
+  String get chatbotLoadLocalModel;
+
+  /// No description provided for @chatbotClickAddFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Click Add File'**
+  String get chatbotClickAddFile;
+
+  /// No description provided for @chatbotAddFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Add File'**
+  String get chatbotAddFile;
+
+  /// No description provided for @chatbotAskMaya.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask Maya anything...'**
+  String get chatbotAskMaya;
+
+  /// No description provided for @chatbotTyping.
+  ///
+  /// In en, this message translates to:
+  /// **'Maya is typing...'**
+  String get chatbotTyping;
+
+  /// No description provided for @chatbotNoResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'Sorry, no response.'**
+  String get chatbotNoResponse;
+
+  /// No description provided for @chatbotOfflineNoModel.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m offline and no local model is loaded. Tap the upload icon in the top right to load a GGUF model.'**
+  String get chatbotOfflineNoModel;
+
+  /// No description provided for @chatbotError.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get chatbotError;
+
+  /// No description provided for @chatbotLoadModelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Load Local Model'**
+  String get chatbotLoadModelTitle;
+
+  /// No description provided for @chatbotLoadModelHint.
+  ///
+  /// In en, this message translates to:
+  /// **'/storage/emulated/0/models/model.gguf'**
+  String get chatbotLoadModelHint;
+
+  /// No description provided for @chatbotLoadModelDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the full path to your GGUF model file:'**
+  String get chatbotLoadModelDesc;
+
+  /// No description provided for @chatbotModelLoadedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Local model loaded!'**
+  String get chatbotModelLoadedSnack;
+
+  /// No description provided for @chatbotModelFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get chatbotModelFailed;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @load.
+  ///
+  /// In en, this message translates to:
+  /// **'Load'**
+  String get load;
+
+  /// No description provided for @navHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get navHome;
+
+  /// No description provided for @navCompOnion.
+  ///
+  /// In en, this message translates to:
+  /// **'CompOnion'**
+  String get navCompOnion;
+
+  /// No description provided for @navProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get navProfile;
 }
 
 class _AppLocalizationsDelegate

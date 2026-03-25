@@ -3,6 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'farm_management.dart';
+import './article_detail_page.dart';
+import '../l10n/app_localizations.dart';
+import '../services/weather_cache_service.dart';
+import '../services/guide_generation_service.dart';
+import '../services/app_state.dart';
 
 class HomePage extends StatefulWidget {
   final String displayName;
@@ -18,38 +25,79 @@ class _HomePageState extends State<HomePage> {
   String _locationName = 'Loading...';
   double _lat = 14.5995;
   double _lon = 120.9842;
+  String? _cacheAge;
+  bool _usingCachedWeather = false;
 
   @override
   void initState() {
     super.initState();
     _loadLocationAndWeather();
+    _generateGuides();
+  }
+
+  Future<void> _generateGuides() async {
+    await GuideGenerationService.generateGuidesForUser(
+      onProgress: (status) => print('Guide: $status'),
+    );
   }
 
   Future<void> _loadLocationAndWeather() async {
+    final connectivity = await Connectivity().checkConnectivity();
+    final isOnline = connectivity != ConnectivityResult.none;
+
+    if (!isOnline) {
+      final cached = await WeatherCacheService.loadWeather();
+      final cachedLocation = await WeatherCacheService.loadLocationName();
+      final age = await WeatherCacheService.getCacheAge();
+      if (cached != null && mounted) {
+        setState(() {
+          _weatherData = cached;
+          _weatherLoading = false;
+          _usingCachedWeather = true;
+          _cacheAge = age;
+          if (cachedLocation != null) _locationName = cachedLocation;
+        });
+      } else {
+        setState(() => _weatherLoading = false);
+      }
+      return;
+    }
+
     await _loadUserLocation();
     await _fetchWeather();
   }
 
   Future<void> _loadUserLocation() async {
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
+    if (user == null) {
+      setState(() => _locationName = 'Metro Manila');
+      return;
+    }
 
     final doc = await FirebaseFirestore.instance
         .collection('users')
         .doc(user.uid)
         .get();
 
-    if (!doc.exists) return;
+    if (!doc.exists) {
+      setState(() => _locationName = 'Metro Manila');
+      return;
+    }
 
     final data = doc.data()!;
     final province = data['province'] as String? ?? '';
     final city = data['city'] as String? ?? '';
 
-    final query = city.isNotEmpty ? '$city, $province, Philippines'
-        : province.isNotEmpty ? '$province, Philippines'
-        : 'Metro Manila, Philippines';
+    setState(() => _locationName = city.isNotEmpty
+        ? '$city, $province'
+        : province.isNotEmpty
+            ? province
+            : 'Metro Manila');
 
-    // Use Open-Meteo geocoding to get coordinates
+    if (province.isEmpty && city.isEmpty) return;
+
+    final query = '$city, $province, Philippines'.trim();
+
     try {
       final geoUri = Uri.parse(
         'https://geocoding-api.open-meteo.com/v1/search'
@@ -58,21 +106,17 @@ class _HomePageState extends State<HomePage> {
       final geoResponse = await http.get(geoUri);
       if (geoResponse.statusCode == 200) {
         final geoData = json.decode(geoResponse.body);
-        if (geoData['results'] != null && geoData['results'].isNotEmpty) {
+        if (geoData['results'] != null &&
+            geoData['results'].isNotEmpty) {
           final result = geoData['results'][0];
           setState(() {
             _lat = result['latitude'];
             _lon = result['longitude'];
-            _locationName = city.isNotEmpty
-                ? '$city, $province'
-                : province.isNotEmpty
-                    ? province
-                    : 'Metro Manila';
           });
         }
       }
     } catch (e) {
-      setState(() => _locationName = 'Metro Manila');
+      // location name already set above, just keep it
     }
   }
 
@@ -95,7 +139,12 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           _weatherData = data;
           _weatherLoading = false;
+          _usingCachedWeather = false;
         });
+        await WeatherCacheService.saveWeather(
+          weatherData: data,
+          locationName: _locationName,
+        );
         await _generateAlerts(data);
       } else {
         setState(() => _weatherLoading = false);
@@ -122,17 +171,15 @@ class _HomePageState extends State<HomePage> {
     final double precipitation =
         (current['precipitation'] as num).toDouble();
 
-    // Check 5-day forecast for rain
     final List precipSum = daily['precipitation_sum'];
     final List windMax = daily['wind_speed_10m_max'];
-    final double maxForecastRain =
-        precipSum.map((e) => (e as num).toDouble()).reduce(
-            (a, b) => a > b ? a : b);
-    final double maxForecastWind =
-        windMax.map((e) => (e as num).toDouble()).reduce(
-            (a, b) => a > b ? a : b);
+    final double maxForecastRain = precipSum
+        .map((e) => (e as num).toDouble())
+        .reduce((a, b) => a > b ? a : b);
+    final double maxForecastWind = windMax
+        .map((e) => (e as num).toDouble())
+        .reduce((a, b) => a > b ? a : b);
 
-    // Rain/Flooding alert
     if (precipitation > 10 || maxForecastRain > 20) {
       alerts.add({
         'type': 'rain',
@@ -144,7 +191,6 @@ class _HomePageState extends State<HomePage> {
       });
     }
 
-    // Typhoon/Strong winds alert
     if (windSpeed > 60 || maxForecastWind > 60) {
       alerts.add({
         'type': 'wind',
@@ -153,11 +199,10 @@ class _HomePageState extends State<HomePage> {
             'Wind speeds of ${windSpeed.toStringAsFixed(0)} km/h detected. Secure crops and equipment.',
         'active': true,
         'severity': windSpeed > 100 ? 'high' : 'medium',
-        'isGlobal': true, // Typhoons are global alerts
+        'isGlobal': true,
       });
     }
 
-    // Extreme heat alert
     if (temp > 38) {
       alerts.add({
         'type': 'heat',
@@ -169,7 +214,6 @@ class _HomePageState extends State<HomePage> {
       });
     }
 
-    // High humidity alert
     if (humidity > 85) {
       alerts.add({
         'type': 'humidity',
@@ -181,7 +225,6 @@ class _HomePageState extends State<HomePage> {
       });
     }
 
-    // Drought risk — no rain in forecast
     if (maxForecastRain < 1 && humidity < 40) {
       alerts.add({
         'type': 'drought',
@@ -193,7 +236,6 @@ class _HomePageState extends State<HomePage> {
       });
     }
 
-    // Write alerts to Firestore
     final batch = FirebaseFirestore.instance.batch();
     final now = Timestamp.now();
 
@@ -201,10 +243,10 @@ class _HomePageState extends State<HomePage> {
       final isGlobal = alert['isGlobal'] == true;
 
       if (isGlobal) {
-        // Write to global alerts collection
         final globalRef = FirebaseFirestore.instance
             .collection('alerts')
-            .doc('${alert['type']}_${_locationName.replaceAll(' ', '_')}');
+            .doc(
+                '${alert['type']}_${_locationName.replaceAll(' ', '_')}');
         batch.set(globalRef, {
           ...alert,
           'location': _locationName,
@@ -213,7 +255,6 @@ class _HomePageState extends State<HomePage> {
         }, SetOptions(merge: true));
       }
 
-      // Always write to user's personal alerts
       final userRef = FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
@@ -237,6 +278,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
@@ -263,16 +305,16 @@ class _HomePageState extends State<HomePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Welcome ${widget.displayName}',
+                        l10n.homeWelcome(widget.displayName),
                         style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: 4),
-                      const Text(
-                        "Here's your Overview for today",
-                        style: TextStyle(
+                      Text(
+                        l10n.homeOverview,
+                        style: const TextStyle(
                             fontSize: 13, color: Colors.grey),
                       ),
                       const SizedBox(height: 16),
@@ -301,12 +343,20 @@ class _HomePageState extends State<HomePage> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        _locationName,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
+                                      Expanded(
+                                        child: FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          alignment:
+                                              Alignment.centerLeft,
+                                          child: Text(
+                                            _locationName,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18,
+                                              fontWeight:
+                                                  FontWeight.bold,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                       IconButton(
@@ -321,12 +371,20 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ],
                                   ),
-                                  const Text(
-                                    'Current Conditions',
-                                    style: TextStyle(
+                                  Text(
+                                    l10n.homeCurrentConditions,
+                                    style: const TextStyle(
                                         color: Colors.white70,
                                         fontSize: 12),
                                   ),
+                                  if (_usingCachedWeather &&
+                                      _cacheAge != null)
+                                    Text(
+                                      'Cached · $_cacheAge',
+                                      style: const TextStyle(
+                                          color: Colors.white54,
+                                          fontSize: 10),
+                                    ),
                                   const SizedBox(height: 8),
                                   Text(
                                     _temperature,
@@ -343,24 +401,25 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       _WeatherCircle(
                                         value: _weatherData?['current']
-                                                    ['relative_humidity_2m']
+                                                    [
+                                                    'relative_humidity_2m']
                                                 ?.toString() ??
                                             '--',
-                                        label: 'Humidity %',
+                                        label: l10n.homeHumidity,
                                       ),
                                       _WeatherCircle(
                                         value: _weatherData?['current']
                                                     ['wind_speed_10m']
                                                 ?.toString() ??
                                             '--',
-                                        label: 'Wind km/h',
+                                        label: l10n.homeWind,
                                       ),
                                       _WeatherCircle(
                                         value: _weatherData?['current']
                                                     ['precipitation']
                                                 ?.toString() ??
                                             '--',
-                                        label: 'Rain mm',
+                                        label: l10n.homeRain,
                                       ),
                                     ],
                                   ),
@@ -383,9 +442,9 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        '5 Day Forecast',
-                        style: TextStyle(
+                      Text(
+                        l10n.homeFiveDayForecast,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -396,9 +455,9 @@ class _HomePageState extends State<HomePage> {
                         _FiveDayForecast(
                             daily: _weatherData!['daily'])
                       else
-                        const Text(
-                          'Loading forecast...',
-                          style: TextStyle(
+                        Text(
+                          l10n.homeLoadingForecast,
+                          style: const TextStyle(
                               color: Colors.white70, fontSize: 12),
                         ),
                     ],
@@ -408,14 +467,13 @@ class _HomePageState extends State<HomePage> {
 
                 // Personal Alerts
                 _AlertsSection(
-                  title: 'Your Alerts',
+                  title: l10n.homeYourAlerts,
                   stream: user != null
                       ? FirebaseFirestore.instance
                           .collection('users')
                           .doc(user.uid)
                           .collection('alerts')
                           .where('active', isEqualTo: true)
-                          .orderBy('createdAt', descending: true)
                           .snapshots()
                       : null,
                 ),
@@ -423,13 +481,73 @@ class _HomePageState extends State<HomePage> {
 
                 // Global Alerts
                 _AlertsSection(
-                  title: 'Regional Alerts',
+                  title: l10n.homeRegionalAlerts,
                   stream: FirebaseFirestore.instance
                       .collection('alerts')
                       .where('active', isEqualTo: true)
-                      .orderBy('createdAt', descending: true)
-                      .limit(5)
                       .snapshots(),
+                ),
+                const SizedBox(height: 16),
+
+                const _ArticlesSection(),
+                const SizedBox(height: 16),
+
+                // Farm Management card
+                GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const FarmManagementPage()),
+                  ),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                          color: const Color(0xFF2E7D32)
+                              .withOpacity(0.3)),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF2E7D32)
+                                .withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(Icons.agriculture,
+                              color: Color(0xFF2E7D32), size: 24),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                l10n.homeFarmManagement,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                l10n.homeFarmManagementSubtitle,
+                                style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Icon(Icons.chevron_right,
+                            color: Colors.grey),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -448,6 +566,7 @@ class _AlertsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -461,14 +580,13 @@ class _AlertsSection extends StatelessWidget {
           Text(
             title,
             style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+                fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
           if (stream == null)
-            const Text('Sign in to see your alerts',
-                style: TextStyle(color: Colors.grey, fontSize: 13))
+            Text(l10n.homeSignInAlerts,
+                style:
+                    const TextStyle(color: Colors.grey, fontSize: 13))
           else
             StreamBuilder<QuerySnapshot>(
               stream: stream,
@@ -480,10 +598,10 @@ class _AlertsSection extends StatelessWidget {
                 }
                 if (!snapshot.hasData ||
                     snapshot.data!.docs.isEmpty) {
-                  return const Text(
-                    'No active alerts ✅',
-                    style:
-                        TextStyle(color: Colors.grey, fontSize: 13),
+                  return Text(
+                    l10n.homeNoActiveAlerts,
+                    style: const TextStyle(
+                        color: Colors.grey, fontSize: 13),
                   );
                 }
                 return Column(
@@ -647,8 +765,7 @@ class _AlertItem extends StatelessWidget {
               children: [
                 Text(title,
                     style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14)),
+                        fontWeight: FontWeight.w600, fontSize: 14)),
                 if (subtitle.isNotEmpty)
                   Text(subtitle,
                       style: const TextStyle(
@@ -673,6 +790,137 @@ class _AlertItem extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ArticlesSection extends StatelessWidget {
+  const _ArticlesSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.menu_book,
+                  color: Color(0xFF2E7D32), size: 20),
+              const SizedBox(width: 8),
+              Text(
+                l10n.homeGuidesArticles,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('articles')
+                .where('published', isEqualTo: true)
+                .limit(3)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState ==
+                  ConnectionState.waiting) {
+                return const Center(
+                    child: CircularProgressIndicator());
+              }
+              if (!snapshot.hasData ||
+                  snapshot.data!.docs.isEmpty) {
+                return Text(
+                  l10n.homeNoGuides,
+                  style: const TextStyle(
+                      color: Colors.grey, fontSize: 13),
+                );
+              }
+              return Column(
+                children: snapshot.data!.docs.map((doc) {
+                  final data =
+                      doc.data() as Map<String, dynamic>;
+                  return GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            ArticleDetailPage(article: data),
+                      ),
+                    ),
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8FAF9),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                            color: const Color(0xFF2E7D32)
+                                .withOpacity(0.15)),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF2E7D32)
+                                  .withOpacity(0.1),
+                              borderRadius:
+                                  BorderRadius.circular(8),
+                            ),
+                            child: const Icon(
+                                Icons.article_outlined,
+                                color: Color(0xFF2E7D32),
+                                size: 18),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  data['title'] ?? '',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                if (data['summary'] != null)
+                                  Text(
+                                    data['summary'],
+                                    style: const TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 12),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                              ],
+                            ),
+                          ),
+                          const Icon(Icons.chevron_right,
+                              color: Colors.grey, size: 18),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              );
+            },
           ),
         ],
       ),

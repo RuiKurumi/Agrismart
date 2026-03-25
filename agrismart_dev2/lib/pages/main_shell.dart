@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'home_page.dart';
 import 'chatbot_page.dart';
 import 'settings_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import '../l10n/app_localizations.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -26,6 +26,8 @@ class _MainShellState extends State<MainShell> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final List<Widget> pages = [
       HomePage(displayName: _userDisplayName),
       const ChatbotPage(),
@@ -39,38 +41,38 @@ class _MainShellState extends State<MainShell> {
         onTap: (index) => setState(() => _currentIndex = index),
         selectedItemColor: const Color(0xFF2E7D32),
         unselectedItemColor: Colors.grey,
-        items:  [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),
-            label: 'Home',
+            icon: const Icon(Icons.bar_chart),
+            label: l10n.navHome,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.school_outlined),
-            label: 'CompOnion',
+            icon: const Icon(Icons.school_outlined),
+            label: l10n.navCompOnion,
           ),
           BottomNavigationBarItem(
-  icon: CircleAvatar(
-    radius: 12,
-    backgroundColor: const Color(0xFF2E7D32),
-    backgroundImage: FirebaseAuth.instance.currentUser?.photoURL != null
-        ? NetworkImage(FirebaseAuth.instance.currentUser!.photoURL!)
-        : null,
-    child: FirebaseAuth.instance.currentUser?.photoURL == null
-        ? Text(
-            (FirebaseAuth.instance.currentUser?.displayName?.isNotEmpty == true
-                    ? FirebaseAuth.instance.currentUser!.displayName!
-                    : FirebaseAuth.instance.currentUser?.email ?? 'U')[0]
-                .toUpperCase(),
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
+            icon: CircleAvatar(
+              radius: 12,
+              backgroundColor: const Color(0xFF2E7D32),
+              backgroundImage: FirebaseAuth.instance.currentUser?.photoURL != null
+                  ? NetworkImage(FirebaseAuth.instance.currentUser!.photoURL!)
+                  : null,
+              child: FirebaseAuth.instance.currentUser?.photoURL == null
+                  ? Text(
+                      (FirebaseAuth.instance.currentUser?.displayName?.isNotEmpty == true
+                              ? FirebaseAuth.instance.currentUser!.displayName!
+                              : FirebaseAuth.instance.currentUser?.email ?? 'U')[0]
+                          .toUpperCase(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                  : null,
             ),
-          )
-        : null,
-  ),
-  label: 'Profile',
-),
+            label: l10n.navProfile,
+          ),
         ],
       ),
     );

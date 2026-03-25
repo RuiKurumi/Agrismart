@@ -9,6 +9,16 @@ plugins {
 }
 
 android {
+
+    applicationVariants.all{
+        val variant = this
+        variant.outputs
+            .map {it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+            .forEach { output ->
+                val outputFileName = "Agrismart-${variant.buildType.name}-${variant.versionName}.apk"
+                output.outputFileName = outputFileName
+            }
+    }
     namespace = "com.simpcast.agrismart"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion

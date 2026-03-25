@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../main.dart';
+import '../services/app_state.dart';
 
 class AdvancedSettingsPage extends StatefulWidget {
   const AdvancedSettingsPage({super.key});
-
+  
   @override
   State<AdvancedSettingsPage> createState() => _AdvancedSettingsPageState();
 }
@@ -14,6 +15,24 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
   String _selectedLanguage = 'en';
   bool _llamaLoaded = false;
 
+
+  @override
+  void initState(){
+    super.initState();
+  }
+
+bool _initialized = false;
+
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    if(!_initialized){
+    final brightness = Theme.of(context).brightness;
+    _darkMode = brightness == Brightness.dark;
+    _selectedLanguage = Localizations.localeOf(context).languageCode;
+    _initialized = true;
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -116,7 +135,7 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
                     groupValue: _selectedLanguage,
                     onChanged: (v) {
                       setState(() => _selectedLanguage = v!);
-                      MyApp.of(context)?.setLocale(const Locale('en'));
+                      AppState.locale.value = Locale(v!);
                     },
                   ),
                   const SizedBox(height: 8),
@@ -126,7 +145,7 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
                     groupValue: _selectedLanguage,
                     onChanged: (v) {
                       setState(() => _selectedLanguage = v!);
-                      MyApp.of(context)?.setLocale(const Locale('tl'));
+                      AppState.locale.value = Locale(v!);
                     },
                   ),
                 ],
@@ -212,6 +231,7 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
   }
 
   Future<void> _loadLocalModel() async {
+    final l10n = AppLocalizations.of(context)!;
     final pathController = TextEditingController();
     final path = await showDialog<String>(
       context: context,
@@ -250,12 +270,13 @@ class _AdvancedSettingsPageState extends State<AdvancedSettingsPage> {
     );
 
     if (path == null || path.isEmpty) return;
-    // TODO: pass path to chatbot_page llama controller
-    setState(() => _llamaLoaded = true);
+    final success = await AppState.setLocalModelPath(path);  // ← replaces setState
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Local model path saved!')),
-      );
+    ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(success
+        ? l10n.chatbotModelLoadedSnack
+        : 'Failed to load model')),
+    );
     }
   }
 }

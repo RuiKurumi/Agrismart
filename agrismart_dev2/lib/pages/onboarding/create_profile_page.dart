@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/app_theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CreateProfilePage extends StatefulWidget {
   const CreateProfilePage({super.key});
@@ -21,7 +21,6 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
   String? _selectedProvince;
   File? _profileImage;
   bool _isLoading = false;
-  String? _existingPhotoUrl;
 
   @override
   void initState() {
@@ -32,7 +31,13 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
   Future<void> _loadExistingProfile() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
-    setState(() => _existingPhotoUrl = user.photoURL);
+
+    final prefs = await SharedPreferences.getInstance();
+    final localPath = prefs.getString('profile_image_${user.uid}');
+    if(localPath != null && mounted){
+      setState(() => _profileImage = File(localPath));
+    }
+
     final doc = await FirebaseFirestore.instance
         .collection('users')
         .doc(user.uid)
@@ -47,7 +52,6 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
         _selectedProvince = philippineProvinces.contains(savedProvince)
             ? savedProvince
             : null;
-        _existingPhotoUrl = data['photoUrl'] ?? user.photoURL;
       });
     }
   }
@@ -60,23 +64,6 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
     super.dispose();
   }
 
-  Future<String?> _uploadProfileImage(User user) async {
-    if (_profileImage == null) return null;
-    try {
-      print('Uploading image...');
-      final ref = FirebaseStorage.instance
-          .ref()
-          .child('profile_images')
-          .child('${user.uid}.jpg');
-      await ref.putFile(_profileImage!);
-      final url = await ref.getDownloadURL();
-      print('Upload successful: $url');
-      return url;
-    } catch (e) {
-      print('Upload error: $e');
-      return null;
-    }
-  }
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -90,7 +77,10 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
     if (user == null) return;
     setState(() => _isLoading = true);
     try {
-      final photoUrl = await _uploadProfileImage(user);
+      if(_profileImage != null){
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('profile_image_${user.uid}', _profileImage!.path);
+      }
 
       final Map<String, dynamic> updates = {
         'email': user.email,
@@ -109,9 +99,6 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
       if (_bioController.text.trim().isNotEmpty) {
         updates['bio'] = _bioController.text.trim();
       }
-      if (photoUrl != null) {
-        updates['photoUrl'] = photoUrl;
-      }
 
       await FirebaseFirestore.instance
           .collection('users')
@@ -121,8 +108,6 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
       if (_nameController.text.trim().isNotEmpty) {
         await user.updateDisplayName(_nameController.text.trim());
       }
-      if (photoUrl != null) await user.updatePhotoURL(photoUrl);
-      await user.reload();
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -160,18 +145,18 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
               child: Stack(
                 children: [
                   CircleAvatar(
-                    radius: 50,
-                    backgroundColor: AppTheme.borderGrey,
-                    backgroundImage: _profileImage != null
-                        ? FileImage(_profileImage!) as ImageProvider
-                        : _existingPhotoUrl != null
-                            ? NetworkImage(_existingPhotoUrl!)
+                        radius: 50,
+                        backgroundColor: AppTheme.borderGrey,
+                        backgroundImage: _profileImage != null
+                            ? FileImage(_profileImage!) as ImageProvider
+                            : FirebaseAuth.instance.currentUser?.photoURL != null
+                                ? NetworkImage(FirebaseAuth.instance.currentUser!.photoURL!)
+                                : null,
+                        child: _profileImage == null &&
+                                FirebaseAuth.instance.currentUser?.photoURL == null
+                            ? const Icon(Icons.person, size: 40, color: Colors.grey)
                             : null,
-                    child: _profileImage == null && _existingPhotoUrl == null
-                        ? const Icon(Icons.person,
-                            size: 40, color: Colors.grey)
-                        : null,
-                  ),
+                      ),
                   Positioned(
                     bottom: 0,
                     right: 0,
@@ -206,7 +191,7 @@ class _CreateProfilePageState extends State<CreateProfilePage> {
 
             // Province dropdown
             DropdownButtonFormField<String>(
-              value: _selectedProvince,
+              initialValue: _selectedProvince,
               hint: Text(l10n.selectProvince),
               decoration: InputDecoration(
                 border: OutlineInputBorder(

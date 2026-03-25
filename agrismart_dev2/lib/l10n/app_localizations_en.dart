@@ -177,7 +177,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get farmSize => 'Farm Size (hectares)';
 
   @override
-  String get farmSizeHint => 'e.g. 0.5';
+  String get farmSizeHint => 'Size in hectares (e.g. 0.5)';
 
   @override
   String get irrigationType => 'Irrigation Type';
@@ -340,4 +340,213 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageTagalog => 'Filipino (Tagalog)';
+
+  @override
+  String homeWelcome(String name) {
+    return 'Welcome $name';
+  }
+
+  @override
+  String get homeOverview => 'Here\'s your Overview for today';
+
+  @override
+  String get homeCurrentConditions => 'Current Conditions';
+
+  @override
+  String get homeFiveDayForecast => '5 Day Forecast';
+
+  @override
+  String get homeLoadingForecast => 'Loading forecast...';
+
+  @override
+  String get homeYourAlerts => 'Your Alerts';
+
+  @override
+  String get homeRegionalAlerts => 'Regional Alerts';
+
+  @override
+  String get homeNoActiveAlerts => 'No active alerts ✅';
+
+  @override
+  String get homeSignInAlerts => 'Sign in to see your alerts';
+
+  @override
+  String get homeGuidesArticles => 'Guides & Articles';
+
+  @override
+  String get homeNoGuides => 'No guides available yet.';
+
+  @override
+  String get homeFarmManagement => 'Farm Management';
+
+  @override
+  String get homeFarmManagementSubtitle =>
+      'Manage your fields and track growth stages';
+
+  @override
+  String get homeHumidity => 'Humidity %';
+
+  @override
+  String get homeWind => 'Wind km/h';
+
+  @override
+  String get homeRain => 'Rain mm';
+
+  @override
+  String get farmManagementTitle => 'Farm Management';
+
+  @override
+  String get farmAddField => 'Add Field';
+
+  @override
+  String get farmTotalFields => 'Total Fields';
+
+  @override
+  String get farmTotalArea => 'Total Area';
+
+  @override
+  String get farmActive => 'Active';
+
+  @override
+  String get farmNoFields => 'No fields yet';
+
+  @override
+  String get farmNoFieldsSubtitle =>
+      'Tap the button below to add your first field.';
+
+  @override
+  String get farmEditField => 'Edit Field';
+
+  @override
+  String get farmAddNewField => 'Add New Field';
+
+  @override
+  String get farmFieldName => 'Field name (e.g. Field A)';
+
+  @override
+  String get farmSelectVariety => 'Select onion variety';
+
+  @override
+  String get farmSelectIrrigation => 'Select irrigation type';
+
+  @override
+  String get farmSelectPlantingDate => 'Select planting date';
+
+  @override
+  String get farmSaveChanges => 'Save Changes';
+
+  @override
+  String get farmAddFieldButton => 'Add Field';
+
+  @override
+  String get farmFailedToSave => 'Failed to save field';
+
+  @override
+  String get farmEdit => 'Edit';
+
+  @override
+  String get farmMarkHarvested => 'Mark as Harvested';
+
+  @override
+  String get farmDelete => 'Delete';
+
+  @override
+  String get farmDeleteTitle => 'Delete Field';
+
+  @override
+  String farmDeleteConfirm(String name) {
+    return 'Are you sure you want to delete \"$name\"?';
+  }
+
+  @override
+  String get farmHarvested => 'Harvested ✅';
+
+  @override
+  String get farmPlanted => 'Planted';
+
+  @override
+  String get farmHarvestLabel => 'Harvest';
+
+  @override
+  String get farmGermination => 'Germination';
+
+  @override
+  String get farmSeedling => 'Seedling';
+
+  @override
+  String get farmVegetative => 'Vegetative';
+
+  @override
+  String get farmBulbing => 'Bulbing';
+
+  @override
+  String get farmMaturation => 'Maturation';
+
+  @override
+  String get farmReadyForHarvest => 'Ready for Harvest';
+
+  @override
+  String get chatbotOnline => 'Online · Gemini';
+
+  @override
+  String get chatbotOffline => 'Offline · Local Model';
+
+  @override
+  String get chatbotModelLoaded => 'Model loaded';
+
+  @override
+  String get chatbotLoadLocalModel => 'Load local model';
+
+  @override
+  String get chatbotClickAddFile => 'Click Add File';
+
+  @override
+  String get chatbotAddFile => 'Add File';
+
+  @override
+  String get chatbotAskMaya => 'Ask Maya anything...';
+
+  @override
+  String get chatbotTyping => 'Maya is typing...';
+
+  @override
+  String get chatbotNoResponse => 'Sorry, no response.';
+
+  @override
+  String get chatbotOfflineNoModel =>
+      'I\'m offline and no local model is loaded. Tap the upload icon in the top right to load a GGUF model.';
+
+  @override
+  String get chatbotError => 'Something went wrong. Please try again.';
+
+  @override
+  String get chatbotLoadModelTitle => 'Load Local Model';
+
+  @override
+  String get chatbotLoadModelHint => '/storage/emulated/0/models/model.gguf';
+
+  @override
+  String get chatbotLoadModelDesc =>
+      'Enter the full path to your GGUF model file:';
+
+  @override
+  String get chatbotModelLoadedSnack => 'Local model loaded!';
+
+  @override
+  String get chatbotModelFailed => 'Failed';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get load => 'Load';
+
+  @override
+  String get navHome => 'Home';
+
+  @override
+  String get navCompOnion => 'CompOnion';
+
+  @override
+  String get navProfile => 'Profile';
 }

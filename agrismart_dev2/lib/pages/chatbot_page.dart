@@ -5,8 +5,7 @@ import 'package:llama_flutter_android/llama_flutter_android.dart' as llama;
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
-final String _geminiApiKey = dotenv.env['GEMINI_API_KEY']?? '';
+import '../l10n/app_localizations.dart';
 
 const String _systemPrompt =
     'You are Maya, an AI agricultural assistant for AgriSmart — a platform '
@@ -62,9 +61,10 @@ class _ChatbotPageState extends State<ChatbotPage> {
   }
 
   void _initGemini() {
+    final apiKey = dotenv.env['GEMINI_API_KEY'] ?? '';
     _geminiModel = GenerativeModel(
       model: 'gemini-2.5-flash',
-      apiKey: _geminiApiKey,
+      apiKey: apiKey,
       systemInstruction: Content.system(_systemPrompt),
     );
     _chatSession = _geminiModel.startChat();
@@ -93,16 +93,17 @@ class _ChatbotPageState extends State<ChatbotPage> {
   }
 
   Future<void> _loadLlamaModel() async {
+    final l10n = AppLocalizations.of(context)!;
     final pathController = TextEditingController();
     final path = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Load Local Model'),
+        title: Text(l10n.chatbotLoadModelTitle),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'Enter the full path to your GGUF model file:',
+            Text(
+              l10n.chatbotLoadModelDesc,
               style: TextStyle(fontSize: 13),
             ),
             const SizedBox(height: 12),
@@ -117,14 +118,14 @@ class _ChatbotPageState extends State<ChatbotPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, pathController.text),
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF2E7D32)),
             child:
-                const Text('Load', style: TextStyle(color: Colors.white)),
+                Text(l10n.load, style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -139,13 +140,13 @@ class _ChatbotPageState extends State<ChatbotPage> {
       setState(() => _llamaLoaded = true);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Local model loaded!')),
+           SnackBar(content: Text(l10n.chatbotModelLoadedSnack)),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Failed: $e')));
+            .showSnackBar(SnackBar(content: Text(l10n.chatbotModelFailed)));
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -153,6 +154,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
   }
 
   Future<void> _sendMessage() async {
+    final l10n = AppLocalizations.of(context)!;
     final text = _messageController.text.trim();
     if (text.isEmpty) return;
     setState(() {
@@ -168,7 +170,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
             await _chatSession.sendMessage(Content.text(text));
         setState(() {
           _messages.add(ChatMessage(
-            text: response.text ?? 'Sorry, no response.',
+            text: response.text ?? l10n.chatbotNoResponse,
             isUser: false,
           ));
         });
@@ -177,8 +179,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
           setState(() {
             _messages.add(ChatMessage(
               text:
-                  "I'm offline and no local model is loaded. Tap the upload "
-                  "icon in the top right to load a GGUF model.",
+                  l10n.chatbotOfflineNoModel,
               isUser: false,
             ));
           });
@@ -203,7 +204,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
     } catch (e) {
       setState(() {
         _messages.add(ChatMessage(
-          text: 'Something went wrong. Please try again.',
+          text: l10n.chatbotError,
           isUser: false,
         ));
       });
@@ -235,6 +236,8 @@ class _ChatbotPageState extends State<ChatbotPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -259,7 +262,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF1A1A1A))),
                 Text(
-                  _isOnline ? 'Online · Gemini' : 'Offline · Local Model',
+                  _isOnline ? l10n.chatbotOnline : l10n.chatbotOffline,
                   style: TextStyle(
                     fontSize: 11,
                     color: _isOnline ? Colors.green : Colors.orange,
@@ -277,7 +280,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
                 color: _llamaLoaded ? Colors.green : Colors.orange,
               ),
               tooltip:
-                  _llamaLoaded ? 'Model loaded' : 'Load local model',
+                  _llamaLoaded ? l10n.chatbotModelLoaded : l10n.chatbotLoadLocalModel,
               onPressed: _llamaLoaded ? null : _loadLlamaModel,
             ),
         ],
@@ -314,7 +317,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text('Click Add File',
+                         Text(l10n.chatbotClickAddFile,
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500)),
@@ -322,7 +325,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
                         ElevatedButton.icon(
                           onPressed: _pickFile,
                           icon: const Icon(Icons.add, size: 16),
-                          label: const Text('Add File'),
+                          label: Text(l10n.chatbotClickAddFile),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF2E7D32),
                             foregroundColor: Colors.white,
@@ -366,7 +369,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
                     controller: _messageController,
                     onSubmitted: (_) => _sendMessage(),
                     decoration: InputDecoration(
-                      hintText: 'Ask Maya anything...',
+                      hintText: l10n.chatbotAskMaya,
                       filled: true,
                       fillColor: const Color(0xFFF0F2F5),
                       border: OutlineInputBorder(
@@ -406,6 +409,8 @@ class _ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+  
+
     return Align(
       alignment:
           message.isUser ? Alignment.centerRight : Alignment.centerLeft,
@@ -453,6 +458,7 @@ class _TypingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
@@ -463,10 +469,10 @@ class _TypingIndicator extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: const Row(
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Maya is typing...',
+            Text(l10n.chatbotTyping,
                 style: TextStyle(color: Colors.grey, fontSize: 13)),
             SizedBox(width: 8),
             SizedBox(

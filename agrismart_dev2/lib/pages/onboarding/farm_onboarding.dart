@@ -97,36 +97,45 @@ class _FarmOnboardingPageState extends State<FarmOnboardingPage> {
   }
 
   Future<void> _saveFarmProfile() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
-    setState(() => _isLoading = true);
-    try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .set({
-        'farm': {
-          'size': double.tryParse(_farmSizeController.text) ?? 0,
-          'irrigationType': _irrigationType,
-          'onionVariety': _onionVariety,
-          'plantingDate': Timestamp.fromDate(_plantingDate!),
-          'onboardingComplete': true,
-        },
-        'onboardingComplete': true,
-      }, SetOptions(merge: true));
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null) return;
+  setState(() => _isLoading = true);
+  try {
+    // Save first field as a subcollection document
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('fields')
+        .add({
+      'name': 'Field 1',
+      'size': double.tryParse(_farmSizeController.text) ?? 0,
+      'irrigationType': _irrigationType,
+      'variety': _onionVariety,
+      'plantingDate': Timestamp.fromDate(_plantingDate!),
+      'status': 'active',
+      'createdAt': FieldValue.serverTimestamp(),
+    });
 
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const MainShell()),
-        );
-      }
-    } catch (e) {
-      _showError('Failed to save farm profile: $e');
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
+    // Mark onboarding complete on user document
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .set({
+      'onboardingComplete': true,
+    }, SetOptions(merge: true));
+
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const MainShell()),
+      );
     }
+  } catch (e) {
+    _showError('Failed to save farm profile: $e');
+  } finally {
+    if (mounted) setState(() => _isLoading = false);
   }
+}
 
   @override
   Widget build(BuildContext context) {
