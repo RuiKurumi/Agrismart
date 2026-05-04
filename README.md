@@ -49,9 +49,10 @@ Agrismart/
 | Mobile | Flutter 3.41+ / Dart |
 | Admin Panel | Next.js 14 (App Router) / TypeScript |
 | Backend | Firebase (Auth, Firestore, Storage) |
-| AI (Online) | Google Gemini 2.5 Flash |
-| AI (Offline) | llama_flutter_android (GGUF models) |
+| AI (Online) | GROQ API - LLaMa 3.3 70B Versatile |
+| AI (Offline) | llama_flutter_android - Qwen2.5 0.5B |
 | Weather | Open-Meteo API (free, no key required) |
+| Mapping | MapLibre |
 | Styling (Admin) | Tailwind CSS |
 | Charts | Recharts |
 
@@ -89,7 +90,7 @@ AgriSmart automatically calculates the crop growth stage based on days after pla
 
 Maya is AgriSmart's built-in AI assistant specialized in Philippine onion farming. She automatically switches between:
 
-- **Online mode** — Google Gemini 2.5 Flash via API
+- **Online mode** — LLaMa 3.3 70B Versatile via API
 - **Offline mode** — Local GGUF model via `llama_flutter_android`
 - **Force offline** — Manual override in Advanced Settings
 
