@@ -24,21 +24,47 @@ Agrismart/
 
 ### Mobile App (Flutter)
 - **Authentication** — Email/password, Google Sign-In, Phone (OTP), Guest access
-- **Farm Onboarding** — Set up farm size, irrigation type, onion variety, and planting date
-- **Farm Management** — Add, edit, delete multiple fields with growth stage tracking
-- **Home Dashboard** — Real-time weather via Open-Meteo API, auto-generated alerts, 5-day forecast
-- **Maya AI Chatbot** — Powered by Gemini 2.5 Flash (online) with local GGUF model fallback (offline)
-- **Localization** — English and Filipino (Tagalog) support
-- **Dark Mode** — Full app-wide dark theme support
-- **Profile Management** — Photo upload, province/municipality, bio
+- **Farm Onboarding** 
+  - Set up:
+    - Farm size 
+    - Irrigation type
+    - Onion variety
+    - Date of Planting
+    - Date of Sowing
+    - Geolocation
+- **Farm Management** 
+  - Allow End Users to:
+    - Add
+    - Edit
+    - Delete   
+multiple fields with growth stage tracking
+- **Home Dashboard** 
+  - Provides:
+    - Real-time weather
+    - Auto-generated alerts and Articles
+    - 5-day forecast
+- **Maya AI Chatbot** 
+  - Powered by GROQ API, LLaMA 3.3 70B Versatile (online) with a downloadable Qwen 2.5 0.5B Instruct (offline)
+- **Localization**
+  - English and Filipino (Tagalog) Localization Support (More localization per update)
+- **Dark Mode** 
+  - Full app-wide dark theme support
+- **Profile Management** 
+  - Rudimentary Photo upload, Set-up of province/municipality, bio and username.
 
 ### Admin Panel (Next.js)
-- **Dashboard** — Real-time stats, user growth chart, fields by variety chart
-- **User Management** — View, search, promote/demote admin roles, delete users
-- **Alerts** — Create, toggle, and delete global weather alerts
-- **Weather Monitor** — Fetch live weather for any Philippine province with agricultural advisory
-- **Articles & Guides** — Create and publish farming guides visible in the app
-- **Farm Fields** — View all registered fields across all users with growth stage tracking
+- **Dashboard** 
+  - Real-time Aggregate stats, user growth chart, fields by variety chart
+- **User Management** 
+  - View, search, promote/demote admin roles, delete users
+- **Alerts** 
+  - Create, toggle, and delete global weather alerts
+- **Weather Monitor** 
+  - Fetch live weather for any Philippine province with agricultural advisory
+- **Articles & Guides** 
+  - Create and publish farming guides visible in the app
+- **Farm Fields** 
+  - View all registered fields across all users with growth stage tracking
 
 ---
 
@@ -51,8 +77,9 @@ Agrismart/
 | Backend | Firebase (Auth, Firestore, Storage) |
 | AI (Online) | GROQ API - LLaMa 3.3 70B Versatile |
 | AI (Offline) | llama_flutter_android - Qwen2.5 0.5B |
-| Weather | Open-Meteo API (free, no key required) |
+| Weather | Open-Meteo API |
 | Mapping | MapLibre |
+| Geolocation Service | Flutter Geolocator |
 | Styling (Admin) | Tailwind CSS |
 | Charts | Recharts |
 
