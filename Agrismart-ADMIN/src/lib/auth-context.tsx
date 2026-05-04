@@ -33,13 +33,23 @@ const AuthContext = createContext<AuthContextType>({
 const signup = async (
   email: string,
   password: string,
-  fullName: string,
-  adminCode: string
+  fullName: string
 ) => {
-  // 🔐 Validate admin code (VERY IMPORTANT)
-  if (adminCode !== process.env.NEXT_PUBLIC_ADMIN_CODE) {
-    throw new Error('Invalid admin code');
-  }
+  const userCredential = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
+
+  const user = userCredential.user;
+
+  await setDoc(doc(db, 'users', user.uid), {
+    email,
+    fullName,
+    role: 'pending',
+    createdAt: new Date(),
+  });
+};
 
   const userCredential = await createUserWithEmailAndPassword(
     auth,
