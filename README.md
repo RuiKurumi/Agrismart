@@ -23,7 +23,14 @@ Agrismart/
 ## ✨ Features
 
 ### Mobile App (Flutter)
-- **Authentication** — Email/password, Google Sign-In, Phone (OTP), Guest access
+- **Authentication** 
+  - Allows Authentication through:
+    - Email/password
+  and 
+    - Google Sign-In
+    - Phone (OTP)
+  or
+    - Guest access
 - **Farm Onboarding** 
   - Set up:
     - Farm size 
