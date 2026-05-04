@@ -18,7 +18,7 @@ Furthermore, we followed the Sprague and Carlson three-component model — data 
 | DSS Component | Implementation |
 |-------|-----------|
 | Data Management | Firebase Firestore (farm data, alerts, articles), Open-Meteo API (weather), SharedPreferences (local cache) |
-| Model Management | Rule-based alert engine, Groq LLM (llama-3.3-70b), Gemini 2.5 Flash, TinyLlama offline model |
+| Model Management | Rule-based alert engine, Groq LLM (llama-3.3-70b), Qwen2.5 0.5B offline model |
 | User Interface | Flutter mobile app + Next.js admin panel |
 
 
