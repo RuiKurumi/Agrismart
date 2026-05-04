@@ -9,6 +9,20 @@ A Decision Support System (DSS) for Filipino onion farmers, combining real-time 
 AgriSmart is a Flutter mobile application paired with a Next.js admin panel, designed to help smallholder onion farmers in the Philippines make better farming decisions. The app provides weather-based alerts, crop growth tracking, and an AI chatbot assistant named **Maya** that works both online and offline.
 
 ---
+AgriSmart applies a Knowledge-Driven DSS with Data-Driven elements. The Knowledge-driven aspect is powered by the AI Component to advise farmers on best practices. Additionally, the Data-Driven aspect comes from quantitative and historical data including weather forecasting data, growth stage calculations and alert thresholds that drive automated recommendations.
+
+AgriSmart goes beyond a simple AI-based Chatbot/Assistant because it supports structured decision-making at multiple levels — automated weather-based alerts for immediate decisions, growth stage tracking for tactical decisions, and AI-generated farm-specific guides for strategic decisions. The system augments farmer judgment rather than replacing it, which is the defining characteristic of DSS.
+
+Furthermore, we followed the Sprague and Carlson three-component model — data management through Firebase and Open-Meteo, model management through our rule-based alert engine and LLM integration, and user interface through the Flutter mobile app and Next.js admin panel. We also incorporated elements of Turban's DSS architecture by separating the knowledge base from the inference engine.
+
+| DSS Component | Implementation |
+|-------|-----------|
+| Data Management | Firebase Firestore (farm data, alerts, articles), Open-Meteo API (weather), SharedPreferences (local cache) |
+| Model Management | Rule-based alert engine, Groq LLM (llama-3.3-70b), Gemini 2.5 Flash, TinyLlama offline model |
+| User Interface | Flutter mobile app + Next.js admin panel |
+
+
+---
 
 ## 🏗️ Project Structure
 
