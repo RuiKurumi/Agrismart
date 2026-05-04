@@ -1,9 +1,14 @@
 'use client';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { setDoc } from 'firebase/firestore';
+
 import { createContext, useContext, useEffect, useState } from 'react';
-import { User, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import {
+  User,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+  createUserWithEmailAndPassword
+} from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from './firebase';
 import { useRouter } from 'next/navigation';
 
@@ -15,8 +20,7 @@ interface AuthContextType {
   signup: (
     email: string,
     password: string,
-    fullName: string,
-    adminCode: string
+    fullName: string
   ) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -26,47 +30,9 @@ const AuthContext = createContext<AuthContextType>({
   isAdmin: false,
   loading: true,
   login: async () => {},
+  signup: async () => {},
   logout: async () => {},
 });
-
-
-const signup = async (
-  email: string,
-  password: string,
-  fullName: string
-) => {
-  const userCredential = await createUserWithEmailAndPassword(
-    auth,
-    email,
-    password
-  );
-
-  const user = userCredential.user;
-
-  await setDoc(doc(db, 'users', user.uid), {
-    email,
-    fullName,
-    role: 'pending',
-    createdAt: new Date(),
-  });
-};
-
-  const userCredential = await createUserWithEmailAndPassword(
-    auth,
-    email,
-    password
-  );
-
-  const user = userCredential.user;
-
-  // ✅ Save user in Firestore
-  await setDoc(doc(db, 'users', user.uid), {
-    email,
-    fullName,
-    role: 'admin',
-    createdAt: new Date(),
-  });
-};
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -74,35 +40,75 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (u) => {
-      setUser(u);
-      if (u) {
-        const userDoc = await getDoc(doc(db, 'users', u.uid));
-        const role = userDoc.data()?.role;
-        setIsAdmin(role === 'admin');
-        if (role !== 'admin') {
-          await signOut(auth);
-          setUser(null);
-          setIsAdmin(false);
-          router.push('/login');
-        }
-      } else {
-        setIsAdmin(false);
-      }
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, [router]);
+  // ✅ SIGNUP (PENDING USER)
+  const signup = async (email: string, password: string, fullName: string) => {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
 
+    const user = userCredential.user;
+
+    await setDoc(doc(db, 'users', user.uid), {
+      email,
+      fullName,
+      role: 'pending',
+      createdAt: new Date(),
+    });
+  };
+
+  // LOGIN
   const login = async (email: string, password: string) => {
     await signInWithEmailAndPassword(auth, email, password);
   };
 
+  // LOGOUT
   const logout = async () => {
     await signOut(auth);
     router.push('/login');
   };
+
+  // AUTH LISTENER
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (u) => {
+      setLoading(true);
+
+      if (!u) {
+        setUser(null);
+        setIsAdmin(false);
+        setLoading(false);
+        return;
+      }
+
+      setUser(u);
+
+      const userDoc = await getDoc(doc(db, 'users', u.uid));
+      const role = userDoc.data()?.role;
+
+      if (role === 'pending') {
+        await signOut(auth);
+        setUser(null);
+        setIsAdmin(false);
+        setLoading(false);
+        router.push('/login?status=pending');
+        return;
+      }
+
+      if (role === 'admin') {
+        setIsAdmin(true);
+      } else {
+        await signOut(auth);
+        setUser(null);
+        setIsAdmin(false);
+        router.push('/login');
+      }
+
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [router]);
 
   return (
     <AuthContext.Provider value={{ user, isAdmin, loading, login, signup, logout }}>
