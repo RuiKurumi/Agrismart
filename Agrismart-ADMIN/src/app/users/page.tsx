@@ -14,14 +14,14 @@ import { db } from '@/lib/firebase';
 import AdminLayout from '@/components/AdminLayout';
 import { Search, Shield, Trash2 } from 'lucide-react';
 
-type TabType = 'pending' | 'approved' | 'rejected';
+type ModeType = 'requests' | 'users';
 
 export default function UsersPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [updating, setUpdating] = useState<string | null>(null);
-  const [tab, setTab] = useState<TabType>('pending');
+  const [mode, setMode] = useState<ModeType>('requests');
 
   const fetchUsers = async () => {
     const snap = await getDocs(collection(db, 'users'));
@@ -33,18 +33,24 @@ export default function UsersPage() {
     fetchUsers();
   }, []);
 
+  // ---------------------------
+  // AUDIT LOG
+  // ---------------------------
   const logAction = async (
     userId: string,
-    action: 'approved' | 'rejected'
+    action: 'approved' | 'rejected' | 'promoted' | 'revoked'
   ) => {
     await addDoc(collection(db, 'auditLogs'), {
       userId,
       action,
-      performedBy: 'admin', // replace with auth.user.uid if needed
+      performedBy: 'admin', // replace with auth.uid later
       timestamp: serverTimestamp(),
     });
   };
 
+  // ---------------------------
+  // REQUEST ACTIONS
+  // ---------------------------
   const approveUser = async (userId: string) => {
     setUpdating(userId);
 
@@ -55,9 +61,7 @@ export default function UsersPage() {
     await logAction(userId, 'approved');
 
     setUsers(prev =>
-      prev.map(u =>
-        u.id === userId ? { ...u, role: 'admin' } : u
-      )
+      prev.map(u => u.id === userId ? { ...u, role: 'admin' } : u)
     );
 
     setUpdating(null);
@@ -75,9 +79,42 @@ export default function UsersPage() {
     await logAction(userId, 'rejected');
 
     setUsers(prev =>
-      prev.map(u =>
-        u.id === userId ? { ...u, role: 'rejected' } : u
-      )
+      prev.map(u => u.id === userId ? { ...u, role: 'rejected' } : u)
+    );
+
+    setUpdating(null);
+  };
+
+  // ---------------------------
+  // USER MANAGEMENT ACTIONS
+  // ---------------------------
+  const promoteUser = async (userId: string) => {
+    setUpdating(userId);
+
+    await updateDoc(doc(db, 'users', userId), {
+      role: 'admin',
+    });
+
+    await logAction(userId, 'promoted');
+
+    setUsers(prev =>
+      prev.map(u => u.id === userId ? { ...u, role: 'admin' } : u)
+    );
+
+    setUpdating(null);
+  };
+
+  const revokeAdmin = async (userId: string) => {
+    setUpdating(userId);
+
+    await updateDoc(doc(db, 'users', userId), {
+      role: 'user',
+    });
+
+    await logAction(userId, 'revoked');
+
+    setUsers(prev =>
+      prev.map(u => u.id === userId ? { ...u, role: 'user' } : u)
     );
 
     setUpdating(null);
@@ -90,8 +127,14 @@ export default function UsersPage() {
     setUsers(prev => prev.filter(u => u.id !== userId));
   };
 
+  // ---------------------------
+  // FILTERING
+  // ---------------------------
   const filteredUsers = users
-    .filter(u => u.role === tab)
+    .filter(u => {
+      if (mode === 'requests') return u.role === 'pending';
+      return true;
+    })
     .filter(u =>
       (u.name || '').toLowerCase().includes(search.toLowerCase()) ||
       (u.email || '').toLowerCase().includes(search.toLowerCase()) ||
@@ -106,10 +149,10 @@ export default function UsersPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="font-display text-2xl font-bold text-gray-900">
-              User Approvals
+              User Management
             </h1>
             <p className="text-gray-500 text-sm mt-1">
-              Manage pending and approved users
+              Manage users and approval requests
             </p>
           </div>
 
@@ -125,21 +168,29 @@ export default function UsersPage() {
           </div>
         </div>
 
-        {/* TABS */}
+        {/* MODE SWITCH */}
         <div className="flex gap-2">
-          {(['pending', 'approved', 'rejected'] as TabType[]).map(t => (
-            <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                tab === t
-                  ? 'bg-primary text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              {t.toUpperCase()}
-            </button>
-          ))}
+          <button
+            onClick={() => setMode('requests')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+              mode === 'requests'
+                ? 'bg-primary text-white'
+                : 'bg-gray-100 text-gray-600'
+            }`}
+          >
+            Pending Requests
+          </button>
+
+          <button
+            onClick={() => setMode('users')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+              mode === 'users'
+                ? 'bg-primary text-white'
+                : 'bg-gray-100 text-gray-600'
+            }`}
+          >
+            User Management
+          </button>
         </div>
 
         {/* TABLE */}
@@ -150,10 +201,7 @@ export default function UsersPage() {
               <thead className="bg-gray-50 border-b border-gray-100">
                 <tr>
                   {['Name', 'Email', 'Province', 'Role', 'Actions'].map(h => (
-                    <th
-                      key={h}
-                      className="text-left px-4 py-3 text-gray-500 font-medium text-xs uppercase"
-                    >
+                    <th key={h} className="text-left px-4 py-3 text-gray-500 text-xs uppercase">
                       {h}
                     </th>
                   ))}
@@ -171,7 +219,7 @@ export default function UsersPage() {
                 ) : filteredUsers.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="py-12 text-center text-gray-400">
-                      No {tab} users found
+                      No users found
                     </td>
                   </tr>
                 ) : (
@@ -205,50 +253,52 @@ export default function UsersPage() {
                       <td className="px-4 py-3">
                         <div className="flex gap-2">
 
-                          {tab === 'pending' && (
+                          {/* REQUEST MODE */}
+                          {mode === 'requests' && (
                             <>
                               <button
                                 onClick={() => approveUser(user.id)}
-                                disabled={updating === user.id}
-                                className="p-1.5 hover:text-green-600"
+                                className="text-green-600"
                               >
                                 <Shield size={16} />
                               </button>
 
                               <button
                                 onClick={() => rejectUser(user.id)}
-                                disabled={updating === user.id}
-                                className="p-1.5 hover:text-red-500"
+                                className="text-red-500"
                               >
                                 <Trash2 size={16} />
                               </button>
                             </>
                           )}
 
-                          {tab === 'approved' && (
-                            <button
-                              onClick={() => rejectUser(user.id)}
-                              className="text-red-500 text-xs"
-                            >
-                              Revoke
-                            </button>
-                          )}
+                          {/* USER MODE */}
+                          {mode === 'users' && (
+                            <>
+                              {user.role !== 'admin' ? (
+                                <button
+                                  onClick={() => promoteUser(user.id)}
+                                  className="text-green-600 text-xs"
+                                >
+                                  Promote
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => revokeAdmin(user.id)}
+                                  className="text-yellow-600 text-xs"
+                                >
+                                  Revoke
+                                </button>
+                              )}
 
-                          {tab === 'rejected' && (
-                            <button
-                              onClick={() => approveUser(user.id)}
-                              className="text-green-600 text-xs"
-                            >
-                              Restore
-                            </button>
+                              <button
+                                onClick={() => deleteUser(user.id)}
+                                className="text-gray-400 text-xs"
+                              >
+                                Delete
+                              </button>
+                            </>
                           )}
-
-                          <button
-                            onClick={() => deleteUser(user.id)}
-                            className="text-gray-400 text-xs"
-                          >
-                            Delete
-                          </button>
 
                         </div>
                       </td>
