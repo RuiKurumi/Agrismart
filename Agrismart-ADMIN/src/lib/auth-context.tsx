@@ -17,11 +17,7 @@ interface AuthContextType {
   isAdmin: boolean;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  signup: (
-    email: string,
-    password: string,
-    fullName: string
-  ) => Promise<void>;
+  signup: (email: string, password: string, fullName: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -40,8 +36,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // ✅ SIGNUP (PENDING USER)
-  const signup = async (email: string, password: string, fullName: string) => {
+  // -----------------------
+  // SIGNUP (always pending)
+  // -----------------------
+  const signup = async (
+    email: string,
+    password: string,
+    fullName: string
+  ) => {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
@@ -58,18 +60,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
+  // -----------------------
   // LOGIN
+  // -----------------------
   const login = async (email: string, password: string) => {
     await signInWithEmailAndPassword(auth, email, password);
   };
 
+  // -----------------------
   // LOGOUT
+  // -----------------------
   const logout = async () => {
     await signOut(auth);
     router.push('/login');
   };
 
+  // -----------------------
   // AUTH LISTENER
+  // -----------------------
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (u) => {
       setLoading(true);
@@ -83,8 +91,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       setUser(u);
 
-      const userDoc = await getDoc(doc(db, 'users', u.uid));
-      const role = userDoc.data()?.role;
+      const ref = doc(db, 'users', u.uid);
+      const snap = await getDoc(ref);
+
+      if (!snap.exists()) {
+        await signOut(auth);
+        setUser(null);
+        setIsAdmin(false);
+        setLoading(false);
+        router.push('/login');
+        return;
+      }
+
+      const role = snap.data()?.role;
+
+      // -----------------------
+      // ROLE HANDLING
+      // -----------------------
 
       if (role === 'pending') {
         await signOut(auth);
@@ -95,13 +118,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
+      if (role === 'rejected') {
+        await signOut(auth);
+        setUser(null);
+        setIsAdmin(false);
+        setLoading(false);
+        router.push('/login?status=rejected');
+        return;
+      }
+
       if (role === 'admin') {
         setIsAdmin(true);
       } else {
+        // any unknown role = block access
         await signOut(auth);
         setUser(null);
         setIsAdmin(false);
         router.push('/login');
+        return;
       }
 
       setLoading(false);
