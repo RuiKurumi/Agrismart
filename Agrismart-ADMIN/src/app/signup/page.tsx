@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/auth-context';
 
 export default function SignupPage() {
   const [fullName, setFullName] = useState('');
@@ -11,8 +12,8 @@ export default function SignupPage() {
   const [adminCode, setAdminCode] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
   const router = useRouter();
+  const { signup } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,13 +27,11 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      // TODO: connect to backend
-      console.log({ fullName, email, password, adminCode });
-
-      router.push('/login');
-    } catch (err) {
-      setError('Failed to create account.');
-    } finally {
+  await signup(email, password, fullName, adminCode);
+  router.push('/login');
+} catch (err: any) {
+  setError(err.message || 'Failed to create account.');
+} finally {
       setLoading(false);
     }
   };
