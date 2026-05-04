@@ -1,0 +1,133 @@
+:root {
+  --accent: #6b8f48;
+  --accent-dark: #4a6a31;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* SPLIT SCREEN */
+.page-shell {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+/* LEFT SIDE */
+.brand-panel {
+  background: linear-gradient(rgba(107,143,72,0.8), rgba(74,106,49,0.9)),
+              url('https://images.unsplash.com/photo-1500382017468-9049fed747ef');
+  background-size: cover;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.brand-panel h1 {
+  font-size: 40px;
+}
+
+.brand-panel p {
+  font-size: 16px;
+}
+
+/* RIGHT SIDE */
+.form-panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f4f7ef;
+}
+
+/* CARD */
+.form-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  animation: fade 0.5s ease;
+}
+
+@keyframes fade {
+  from {opacity: 0; transform: translateY(20px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+/* FORM */
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-row {
+  display: flex;
+  gap: 10px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+input:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 5px rgba(107,143,72,0.3);
+}
+
+/* BUTTON */
+.btn-primary {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+}
+
+/* LINKS */
+.extra-link {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.extra-link.center {
+  justify-content: center;
+  gap: 5px;
+}
+
+a {
+  color: var(--accent-dark);
+  text-decoration: none;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .page-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-panel {
+    display: none;
+  }
+}
