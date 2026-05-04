@@ -1,5 +1,6 @@
 'use client';
-
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { setDoc } from 'firebase/firestore';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { User, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
@@ -11,6 +12,12 @@ interface AuthContextType {
   isAdmin: boolean;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  signup: (
+    email: string,
+    password: string,
+    fullName: string,
+    adminCode: string
+  ) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -21,6 +28,35 @@ const AuthContext = createContext<AuthContextType>({
   login: async () => {},
   logout: async () => {},
 });
+
+
+const signup = async (
+  email: string,
+  password: string,
+  fullName: string,
+  adminCode: string
+) => {
+  // 🔐 Validate admin code (VERY IMPORTANT)
+  if (adminCode !== process.env.NEXT_PUBLIC_ADMIN_CODE) {
+    throw new Error('Invalid admin code');
+  }
+
+  const userCredential = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
+
+  const user = userCredential.user;
+
+  // ✅ Save user in Firestore
+  await setDoc(doc(db, 'users', user.uid), {
+    email,
+    fullName,
+    role: 'admin',
+    createdAt: new Date(),
+  });
+};
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -59,7 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, isAdmin, loading, login, signup, logout }}>
       {children}
     </AuthContext.Provider>
   );
