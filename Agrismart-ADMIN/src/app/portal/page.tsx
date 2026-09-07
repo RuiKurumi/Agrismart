@@ -3,12 +3,13 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ShieldCheck, Smartphone, ArrowLeft, Download, ExternalLink } from 'lucide-react';
+import { GITHUB_LATEST_RELEASE_URL } from '@/lib/github';
+import { useLatestVersion } from '@/hooks/useLatestVersion';
 
 export default function PortalPage() {
   const router = useRouter();
   const [view, setView] = useState<'select' | 'enduser'>('select');
-
-  const GITHUB_RELEASE = 'https://github.com/RuiKurumi/Agrismart/releases/tag/1.3.5';
+  const version = useLatestVersion();
 
   if (view === 'enduser') {
     return (
@@ -42,22 +43,22 @@ export default function PortalPage() {
 
             <div className="mt-6 space-y-3">
               <a
-                href={GITHUB_RELEASE}
+                href={GITHUB_LATEST_RELEASE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary w-full py-3 flex items-center justify-center gap-2 text-[15px]"
               >
                 <Download size={18} />
-                Download App v1.3.5
+                Download App v{version}
                 <ExternalLink size={14} className="opacity-80" />
               </a>
               <a
-                href={GITHUB_RELEASE}
+                href={GITHUB_LATEST_RELEASE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block text-xs text-gray-400 hover:text-[#2E7D32] hover:underline break-all"
               >
-                {GITHUB_RELEASE}
+                {GITHUB_LATEST_RELEASE_URL}
               </a>
             </div>
 
@@ -111,7 +112,7 @@ export default function PortalPage() {
             <span className="mt-5 inline-flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-blue-600 text-white text-sm font-medium group-hover:bg-blue-700 transition-colors">
               Continue as End User
             </span>
-            <p className="text-xs text-gray-400 mt-3">Download APK v1.3.5</p>
+            <p className="text-xs text-gray-400 mt-3">Download APK v{version}</p>
           </button>
 
           {/* Admin */}
