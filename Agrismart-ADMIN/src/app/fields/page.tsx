@@ -5,7 +5,10 @@ import { collection, getDocs, doc, updateDoc, deleteDoc, addDoc, serverTimestamp
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/auth-context';
 import AdminLayout from '@/components/AdminLayout';
+import dynamic from 'next/dynamic';
 import { Sprout, Search, Pencil, Trash2, Send, Eye, X, Save, Bell, MapPin, RefreshCw, Filter } from 'lucide-react';
+
+const FarmHeatmap = dynamic(() => import('@/components/FarmHeatmap'), { ssr: false, loading: () => <div className="card p-8 text-center text-sm text-gray-400">Loading heatmap…</div> });
 
 const stageColor: Record<string, string> = {
   'Germination': 'badge-yellow',
@@ -293,6 +296,14 @@ export default function FieldsPage() {
             ))}
             </div>
           </div>
+        )}
+
+        {/* Farm Density Heatmap */}
+        {!loading && fields.length > 0 && (
+          <FarmHeatmap fields={filtered} />
+        )}
+        {loading && (
+          <div className="card p-8 text-center text-sm text-gray-400">Loading farm distribution…</div>
         )}
 
         {/* Filters */}
