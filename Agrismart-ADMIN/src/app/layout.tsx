@@ -3,8 +3,17 @@ import './globals.css';
 import { AuthProvider } from '@/lib/auth-context';
 
 export const metadata: Metadata = {
-  title: 'AgriSmart Admin',
-  description: 'AgriSmart Administration Panel',
+  title: 'AgriSmart — Decision Support for Filipino Onion Farmers',
+  description: 'AgriSmart DSS for Occidental Mindoro & Philippine onion farmers — Flutter mobile app + Next.js admin panel with Maya AI, Open-Meteo weather, and farm management.',
+  icons: {
+    icon: '/icon.svg',
+    apple: '/icon.svg',
+  },
+  openGraph: {
+    title: 'AgriSmart',
+    description: 'Decision Support System for Filipino onion farmers.',
+    images: ['/icon.svg'],
+  },
 };
 
 export default function RootLayout({
