@@ -12,10 +12,16 @@ import {
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import AdminLayout from '@/components/AdminLayout';
-import { Search, Shield, Trash2, Download } from 'lucide-react';
+import { Search, Shield, Trash2, Download, AlertCircle, CheckCircle, XCircle } from 'lucide-react';
 import { exportUsersToCSV } from '@/lib/export';
 
 type ModeType = 'requests' | 'users';
+
+type AlertType = 'success' | 'error' | null;
+interface AlertState {
+  type: AlertType;
+  message: string;
+}
 
 export default function UsersPage() {
   const [users, setUsers] = useState<any[]>([]);
@@ -23,6 +29,14 @@ export default function UsersPage() {
   const [search, setSearch] = useState('');
   const [updating, setUpdating] = useState<string | null>(null);
   const [mode, setMode] = useState<ModeType>('requests');
+  const [alert, setAlert] = useState<AlertState>({ type: null, message: '' });
+  const [confirmDialog, setConfirmDialog] = useState<{
+    open: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    variant?: 'danger' | 'primary';
+  }>({ open: false, title: '', message: '', onConfirm: () => {} });
 
   const fetchUsers = async () => {
     const snap = await getDocs(collection(db, 'users'));
@@ -52,80 +66,117 @@ export default function UsersPage() {
   // ---------------------------
   // REQUEST ACTIONS
   // ---------------------------
+  const showConfirm = (title: string, message: string, onConfirm: () => void, variant?: 'danger' | 'primary') => {
+    setConfirmDialog({ open: true, title, message, onConfirm, variant });
+  };
+
+  const showAlert = (type: 'success' | 'error', message: string) => {
+    setAlert({ type, message });
+    setTimeout(() => setAlert({ type: null, message: '' }), 4000);
+  };
+
   const approveUser = async (userId: string) => {
-    setUpdating(userId);
-
-    await updateDoc(doc(db, 'users', userId), {
-      role: 'admin',
-    });
-
-    await logAction(userId, 'approved');
-
-    setUsers(prev =>
-      prev.map(u => u.id === userId ? { ...u, role: 'admin' } : u)
+    showConfirm(
+      'Approve User',
+      'Approve this user and grant them admin access?',
+      async () => {
+        setUpdating(userId);
+        try {
+          await updateDoc(doc(db, 'users', userId), { role: 'admin' });
+          await logAction(userId, 'approved');
+          setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: 'admin' } : u));
+          showAlert('success', 'User approved and promoted to admin');
+        } catch (e: any) {
+          showAlert('error', e.message || 'Failed to approve user');
+        } finally {
+          setUpdating(null);
+        }
+      },
+      'primary'
     );
-
-    setUpdating(null);
   };
 
   const rejectUser = async (userId: string) => {
-    if (!confirm('Reject this user?')) return;
-
-    setUpdating(userId);
-
-    await updateDoc(doc(db, 'users', userId), {
-      role: 'rejected',
-    });
-
-    await logAction(userId, 'rejected');
-
-    setUsers(prev =>
-      prev.map(u => u.id === userId ? { ...u, role: 'rejected' } : u)
+    showConfirm(
+      'Reject User',
+      'Reject this user? This will mark them as rejected.',
+      async () => {
+        setUpdating(userId);
+        try {
+          await updateDoc(doc(db, 'users', userId), { role: 'rejected' });
+          await logAction(userId, 'rejected');
+          setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: 'rejected' } : u));
+          showAlert('success', 'User rejected');
+        } catch (e: any) {
+          showAlert('error', e.message || 'Failed to reject user');
+        } finally {
+          setUpdating(null);
+        }
+      },
+      'danger'
     );
-
-    setUpdating(null);
   };
 
   // ---------------------------
   // USER MANAGEMENT ACTIONS
   // ---------------------------
   const promoteUser = async (userId: string) => {
-    setUpdating(userId);
-
-    await updateDoc(doc(db, 'users', userId), {
-      role: 'admin',
-    });
-
-    await logAction(userId, 'promoted');
-
-    setUsers(prev =>
-      prev.map(u => u.id === userId ? { ...u, role: 'admin' } : u)
+    showConfirm(
+      'Promote to Admin',
+      'Promote this user to admin? They will gain full admin access.',
+      async () => {
+        setUpdating(userId);
+        try {
+          await updateDoc(doc(db, 'users', userId), { role: 'admin' });
+          await logAction(userId, 'promoted');
+          setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: 'admin' } : u));
+          showAlert('success', 'User promoted to admin');
+        } catch (e: any) {
+          showAlert('error', e.message || 'Failed to promote user');
+        } finally {
+          setUpdating(null);
+        }
+      },
+      'primary'
     );
-
-    setUpdating(null);
   };
 
   const revokeAdmin = async (userId: string) => {
-    setUpdating(userId);
-
-    await updateDoc(doc(db, 'users', userId), {
-      role: 'user',
-    });
-
-    await logAction(userId, 'revoked');
-
-    setUsers(prev =>
-      prev.map(u => u.id === userId ? { ...u, role: 'user' } : u)
+    showConfirm(
+      'Revoke Admin Access',
+      'Revoke admin access for this user? They will become a regular user.',
+      async () => {
+        setUpdating(userId);
+        try {
+          await updateDoc(doc(db, 'users', userId), { role: 'user' });
+          await logAction(userId, 'revoked');
+          setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: 'user' } : u));
+          showAlert('success', 'Admin access revoked');
+        } catch (e: any) {
+          showAlert('error', e.message || 'Failed to revoke admin access');
+        } finally {
+          setUpdating(null);
+        }
+      },
+      'danger'
     );
-
-    setUpdating(null);
   };
 
   const deleteUser = async (userId: string) => {
-    if (!confirm('Delete this user permanently?')) return;
-
-    await deleteDoc(doc(db, 'users', userId));
-    setUsers(prev => prev.filter(u => u.id !== userId));
+    showConfirm(
+      'Delete User',
+      'Permanently delete this user? This action cannot be undone.',
+      async () => {
+        try {
+          await deleteDoc(doc(db, 'users', userId));
+          setUsers(prev => prev.filter(u => u.id !== userId));
+          showAlert('success', 'User deleted');
+        } catch (e: any) {
+          showAlert('error', e.message || 'Failed to delete user');
+        }
+      },
+      'danger'
+    );
   };
 
   // ---------------------------
@@ -144,6 +195,50 @@ export default function UsersPage() {
 
   return (
     <AdminLayout>
+      {/* Alert Toast */}
+      {alert.type && (
+        <div className="fixed top-4 right-4 z-50 animate-slide-in flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg min-w-[280px] max-w-md
+          ${alert.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}">
+          {alert.type === 'success' ? (
+            <CheckCircle size={20} className="shrink-0" />
+          ) : (
+            <AlertCircle size={20} className="shrink-0" />
+          )}
+          <span className="text-sm font-medium">{alert.message}</span>
+        </div>
+      )}
+
+      {/* Confirmation Dialog */}
+      {confirmDialog.open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-6">
+            <h3 className="text-lg font-semibold text-gray-900">{confirmDialog.title}</h3>
+            <p className="text-gray-600 mt-2 text-sm">{confirmDialog.message}</p>
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setConfirmDialog({ ...confirmDialog, open: false })}
+                className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  confirmDialog.onConfirm();
+                  setConfirmDialog({ ...confirmDialog, open: false });
+                }}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition ${
+                  confirmDialog.variant === 'danger'
+                    ? 'bg-red-600 text-white hover:bg-red-700'
+                    : 'bg-primary text-white hover:bg-primary/90'
+                }`}
+              >
+                {confirmDialog.variant === 'danger' ? 'Confirm' : 'Proceed'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="space-y-6">
 
         {/* HEADER */}
