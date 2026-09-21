@@ -12,7 +12,8 @@ import {
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import AdminLayout from '@/components/AdminLayout';
-import { Search, Shield, Trash2 } from 'lucide-react';
+import { Search, Shield, Trash2, Download } from 'lucide-react';
+import { exportUsersToCSV } from '@/lib/export';
 
 type ModeType = 'requests' | 'users';
 
@@ -156,15 +157,23 @@ export default function UsersPage() {
             </p>
           </div>
 
-          <div className="relative">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search users..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="input pl-9 w-64"
-            />
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search users..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="input pl-9 w-64"
+              />
+            </div>
+            <button
+              onClick={() => exportUsersToCSV(users)}
+              className="btn-secondary flex items-center gap-2 whitespace-nowrap"
+            >
+              <Download size={16} /> Export CSV
+            </button>
           </div>
         </div>
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { collection, collectionGroup, getDocs } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import AdminLayout from '@/components/AdminLayout';
 import {
@@ -103,129 +103,50 @@ export default function ReadingsPage() {
     setError('');
     setSourceInfo('');
     try {
-      let snap: any = null;
-      let usedSource = '';
+      // Primary: scan users -> fields -> readings (same pattern as dashboard)
+      setSourceInfo('Scanning users/.../fields/.../readings');
+      const usersSnap = await getDocs(collection(db, 'users'));
+      const userMap: Record<string, any> = {};
+      usersSnap.docs.forEach((d) => (userMap[d.id] = d.data()));
 
-      const tryGroup = async (name: string) => {
-        try {
-          const s = await getDocs(collectionGroup(db, name));
-          if (s.size > 0) return { s, name };
-        } catch (e) {
-          console.warn(`collectionGroup ${name} failed`, e);
-        }
-        return null;
-      };
-
-      // Try known collectionGroup names
-      for (const name of ['readings', 'sensorReadings', 'measurements', 'sensor_data', 'fieldReadings']) {
-        const res = await tryGroup(name);
-        if (res) {
-          snap = res.s;
-          usedSource = `collectionGroup:${res.name}`;
-          break;
-        }
-      }
-
-      // Try top-level collections
-      if (!snap || snap.size === 0) {
-        for (const name of ['readings', 'sensorReadings', 'measurements']) {
-          try {
-            const s = await getDocs(collection(db, name));
-            if (s.size > 0) {
-              snap = s;
-              usedSource = `collection:${name}`;
-              break;
-            }
-          } catch {}
-        }
-      }
-
-      let raw: Reading[] = [];
-
-      if (snap && snap.size > 0) {
-        raw = snap.docs.map((d: any) => {
-          const data = d.data();
-          return {
-            id: d.id,
-            _path: d.ref.path,
-            _source: usedSource,
-            _userId: d.ref.parent?.parent?.id || data.userId || data.uid || null,
-            _fieldId: d.ref.parent?.id || data.fieldId || null,
-            ...data,
-          };
-        });
-        setSourceInfo(`${usedSource} (${snap.size} docs)`);
-      } else {
-        // Fallback scan: users -> fields -> readings
-        setSourceInfo('Scanning users/.../fields/.../readings (fallback)');
-        const usersSnap = await getDocs(collection(db, 'users'));
-        const userMap: Record<string, any> = {};
-        usersSnap.docs.forEach((d) => (userMap[d.id] = d.data()));
-
-        const all: Reading[] = [];
-        // limit to avoid explosion: first 30 users
-        const usersToScan = usersSnap.docs.slice(0, 30);
-        await Promise.all(
-          usersToScan.map(async (userDoc) => {
-            const fieldsSnap = await getDocs(collection(db, 'users', userDoc.id, 'fields'));
-            await Promise.all(
-              fieldsSnap.docs.slice(0, 20).map(async (fieldDoc) => {
-                const fieldData = fieldDoc.data() as any;
-                // Try readings subcollection under field
-                for (const sub of ['readings', 'sensorReadings', 'measurements', 'data']) {
-                  try {
-                    const rSnap = await getDocs(collection(db, 'users', userDoc.id, 'fields', fieldDoc.id, sub));
-                    rSnap.docs.forEach((rd) => {
-                      all.push({
-                        id: rd.id,
-                        _path: rd.ref.path,
-                        _source: `users/${userDoc.id}/fields/${fieldDoc.id}/${sub}`,
-                        _userId: userDoc.id,
-                        _fieldId: fieldDoc.id,
-                        userName: userMap[userDoc.id]?.name || userMap[userDoc.id]?.email,
-                        fieldName: fieldData.name || fieldData.fieldName || fieldDoc.id,
-                        ...rd.data(),
-                      } as Reading);
-                    });
-                    if (rSnap.size > 0) break;
-                  } catch {}
-                }
-              })
-            );
-          })
-        );
-        raw = all;
-        if (raw.length === 0) {
-          setSourceInfo('No readings found in any known location (checked collectionGroup & user fields subcollections)');
-        } else {
-          setSourceInfo(`fallback scan: ${raw.length} docs across ${usersToScan.length} users`);
-        }
-      }
-
-      // Enrich with user/field names if missing and we have userId
-      if (raw.length > 0) {
-        // Fetch user names for those without userName
-        const missingUserIds = Array.from(new Set(raw.filter((r) => !r.userName && r._userId).map((r) => r._userId!))).slice(0, 30);
-        if (missingUserIds.length > 0) {
-          const userNameMap: Record<string, string> = {};
+      const all: Reading[] = [];
+      // limit to avoid explosion: first 50 users
+      const usersToScan = usersSnap.docs.slice(0, 50);
+      await Promise.all(
+        usersToScan.map(async (userDoc) => {
+          const fieldsSnap = await getDocs(collection(db, 'users', userDoc.id, 'fields'));
           await Promise.all(
-            missingUserIds.map(async (uid) => {
-              try {
-                const uSnap = await getDocs(collection(db, 'users'));
-                // we already have but just search
-                const found = uSnap.docs.find((d) => d.id === uid);
-                if (found) {
-                  const d = found.data() as any;
-                  userNameMap[uid] = d.name || d.email || uid.slice(0, 6);
-                }
-              } catch {}
+            fieldsSnap.docs.slice(0, 50).map(async (fieldDoc) => {
+              const fieldData = fieldDoc.data() as any;
+              // Try readings subcollection under field
+              for (const sub of ['readings', 'sensorReadings', 'measurements', 'data', 'sensor_data']) {
+                try {
+                  const rSnap = await getDocs(collection(db, 'users', userDoc.id, 'fields', fieldDoc.id, sub));
+                  rSnap.docs.forEach((rd) => {
+                    all.push({
+                      id: rd.id,
+                      _path: rd.ref.path,
+                      _source: `users/${userDoc.id}/fields/${fieldDoc.id}/${sub}`,
+                      _userId: userDoc.id,
+                      _fieldId: fieldDoc.id,
+                      userName: userMap[userDoc.id]?.name || userMap[userDoc.id]?.email,
+                      fieldName: fieldData.name || fieldData.fieldName || fieldDoc.id,
+                      ...rd.data(),
+                    } as Reading);
+                  });
+                  if (rSnap.size > 0) break;
+                } catch {}
+              }
             })
           );
-          raw = raw.map((r) => ({
-            ...r,
-            userName: r.userName || (r._userId ? userNameMap[r._userId] || r._userId.slice(0, 8) : undefined),
-          }));
-        }
+        })
+      );
+
+      let raw = all;
+      if (raw.length === 0) {
+        setSourceInfo('No readings found in users/.../fields/.../readings subcollections');
+      } else {
+        setSourceInfo(`users/fields scan: ${raw.length} docs across ${usersToScan.length} users`);
       }
 
       // Sort by timestamp desc

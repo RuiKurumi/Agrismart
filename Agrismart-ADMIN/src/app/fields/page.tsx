@@ -6,7 +6,8 @@ import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/auth-context';
 import AdminLayout from '@/components/AdminLayout';
 import dynamic from 'next/dynamic';
-import { Sprout, Search, Pencil, Trash2, Send, Eye, X, Save, Bell, MapPin, RefreshCw, Filter } from 'lucide-react';
+import { Sprout, Search, Pencil, Trash2, Send, Eye, X, Save, Bell, MapPin, RefreshCw, Filter, Download } from 'lucide-react';
+import { exportFieldsToCSV } from '@/lib/export';
 
 const FarmHeatmap = dynamic(() => import('@/components/FarmHeatmap'), { ssr: false, loading: () => <div className="card p-8 text-center text-sm text-gray-400">Loading heatmap…</div> });
 
@@ -245,6 +246,12 @@ export default function FieldsPage() {
             <p className="text-gray-500 text-sm mt-1">{fields.length} registered farms across all users · Manage, notify owners, or remove farms</p>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => exportFieldsToCSV(fields)}
+              className="btn-secondary flex items-center gap-2"
+            >
+              <Download size={16} /> Export CSV
+            </button>
             <button onClick={fetchFields} disabled={loading} className="btn-secondary flex items-center gap-2">
               <RefreshCw size={16} className={loading ? 'animate-spin' : ''} /> Refresh
             </button>
