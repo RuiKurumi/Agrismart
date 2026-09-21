@@ -190,7 +190,7 @@ export default function FarmHeatmap({ fields }: Props) {
   }, [mode]);
 
   return (
-    <div className="card overflow-hidden">
+    <div className="card overflow-hidden z-0">
       <div className="px-5 py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-start gap-3">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white shrink-0">
@@ -224,12 +224,12 @@ export default function FarmHeatmap({ fields }: Props) {
         </div>
       </div>
 
-      <div className="relative">
+      <div className="relative z-0">
         {/* Map */}
-        <div ref={mapRef} className="h-[380px] sm:h-[420px] w-full bg-[#F3F4F6]" />
+        <div ref={mapRef} className="h-[380px] sm:h-[420px] w-full bg-[#F3F4F6] z-0" />
 
         {/* Gradient legend */}
-        <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur border border-gray-200 rounded-xl px-3 py-2 shadow-sm">
+        <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur border border-gray-200 rounded-xl px-3 py-2 shadow-sm z-0">
           <p className="text-[10px] font-bold tracking-widest text-gray-500 uppercase">Density</p>
           <div className="mt-1.5 h-2 w-32 rounded-full" style={{ background: 'linear-gradient(to right, #60A5FA, #34D399, #FBBF24, #F97316, #EF4444)' }} />
           <div className="flex justify-between text-[10px] text-gray-400 mt-1">
@@ -238,7 +238,7 @@ export default function FarmHeatmap({ fields }: Props) {
         </div>
 
         {!ready && !leafletLoadError && (
-          <div className="absolute inset-0 bg-white/60 backdrop-blur-sm flex items-center justify-center">
+          <div className="absolute inset-0 bg-white/60 backdrop-blur-sm flex items-center justify-center z-0">
             <div className="flex flex-col items-center gap-2">
               <div className="w-8 h-8 border-3 border-[#2E7D32] border-t-transparent rounded-full animate-spin" style={{ borderWidth: 3 }} />
               <p className="text-xs text-gray-500">Loading map…</p>
@@ -247,7 +247,7 @@ export default function FarmHeatmap({ fields }: Props) {
         )}
 
         {leafletLoadError && (
-          <div className="absolute inset-0 bg-white flex items-center justify-center p-6 text-center">
+          <div className="absolute inset-0 bg-white flex items-center justify-center p-6 text-center z-0">
             <div>
               <p className="text-sm font-medium text-gray-900">Map failed to load</p>
               <p className="text-xs text-gray-500 mt-1">{leafletLoadError}</p>
@@ -257,7 +257,7 @@ export default function FarmHeatmap({ fields }: Props) {
         )}
 
         {total === 0 && ready && (
-          <div className="absolute inset-0 bg-white/80 flex items-center justify-center p-6 text-center">
+          <div className="absolute inset-0 bg-white/80 flex items-center justify-center p-6 text-center z-0">
             <div>
               <MapPin size={24} className="mx-auto text-gray-300 mb-2" />
               <p className="text-sm text-gray-500">No farms to display on heatmap</p>

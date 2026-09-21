@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { FALLBACK_VERSION, fetchLatestVersion } from '@/lib/github';
+import { FALLBACK_VERSION, FALLBACK_APK_URL, fetchLatestVersion, fetchLatestApkUrl } from '@/lib/github';
 
 /**
  * Client hook that fetches the latest GitHub release version.
@@ -22,4 +22,24 @@ export function useLatestVersion(): string {
   }, []);
 
   return version;
+}
+
+/**
+ * Client hook that fetches the direct APK download URL from latest release.
+ * Falls back to FALLBACK_APK_URL (release page) while loading or on error.
+ */
+export function useLatestApkUrl(): string {
+  const [url, setUrl] = useState<string>(FALLBACK_APK_URL);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchLatestApkUrl().then((u) => {
+      if (!cancelled) setUrl(u);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return url;
 }

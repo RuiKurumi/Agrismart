@@ -4,12 +4,13 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ShieldCheck, Smartphone, ArrowLeft, Download, ExternalLink } from 'lucide-react';
 import { GITHUB_LATEST_RELEASE_URL } from '@/lib/github';
-import { useLatestVersion } from '@/hooks/useLatestVersion';
+import { useLatestVersion, useLatestApkUrl } from '@/hooks/useLatestVersion';
 
 export default function PortalPage() {
   const router = useRouter();
   const [view, setView] = useState<'select' | 'enduser'>('select');
   const version = useLatestVersion();
+  const apkUrl = useLatestApkUrl();
 
   if (view === 'enduser') {
     return (
