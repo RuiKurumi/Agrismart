@@ -1,0 +1,154 @@
+'use client';
+
+import { createContext, useContext, useEffect, useState } from 'react';
+import {
+  User,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+  createUserWithEmailAndPassword
+} from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { auth, db } from './firebase';
+import { useRouter } from 'next/navigation';
+
+interface AuthContextType {
+  user: User | null;
+  isAdmin: boolean;
+  loading: boolean;
+  login: (email: string, password: string) => Promise<void>;
+  signup: (email: string, password: string, fullName: string) => Promise<void>;
+  logout: () => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  isAdmin: false,
+  loading: true,
+  login: async () => {},
+  signup: async () => {},
+  logout: async () => {},
+});
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  // -----------------------
+  // SIGNUP (always pending)
+  // -----------------------
+  const signup = async (
+    email: string,
+    password: string,
+    fullName: string
+  ) => {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    const user = userCredential.user;
+
+    await setDoc(doc(db, 'users', user.uid), {
+      email,
+      fullName,
+      role: 'admin',
+      createdAt: new Date(),
+    });
+  };
+
+  // -----------------------
+  // LOGIN
+  // -----------------------
+  const login = async (email: string, password: string) => {
+    await signInWithEmailAndPassword(auth, email, password);
+  };
+
+  // -----------------------
+  // LOGOUT
+  // -----------------------
+  const logout = async () => {
+    await signOut(auth);
+    router.push('/login');
+  };
+
+  // -----------------------
+  // AUTH LISTENER
+  // -----------------------
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (u) => {
+      setLoading(true);
+
+      if (!u) {
+        setUser(null);
+        setIsAdmin(false);
+        setLoading(false);
+        return;
+      }
+
+      setUser(u);
+
+      const ref = doc(db, 'users', u.uid);
+      const snap = await getDoc(ref);
+
+      if (!snap.exists()) {
+        await signOut(auth);
+        setUser(null);
+        setIsAdmin(false);
+        setLoading(false);
+        router.push('/login');
+        return;
+      }
+
+      const role = snap.data()?.role;
+
+      // -----------------------
+      // ROLE HANDLING
+      // -----------------------
+
+      if (role === 'pending') {
+        await signOut(auth);
+        setUser(null);
+        setIsAdmin(false);
+        setLoading(false);
+        router.push('/login?status=pending');
+        return;
+      }
+
+      if (role === 'rejected') {
+        await signOut(auth);
+        setUser(null);
+        setIsAdmin(false);
+        setLoading(false);
+        router.push('/login?status=rejected');
+        return;
+      }
+
+      if (role === 'admin') {
+        setIsAdmin(true);
+      } else {
+        // any unknown role = block access
+        await signOut(auth);
+        setUser(null);
+        setIsAdmin(false);
+        router.push('/login');
+        return;
+      }
+
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [router]);
+
+  return (
+    <AuthContext.Provider value={{ user, isAdmin, loading, login, signup, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export const useAuth = () => useContext(AuthContext);
