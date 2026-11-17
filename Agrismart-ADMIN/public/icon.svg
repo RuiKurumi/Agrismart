@@ -1,0 +1,45 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AgriSmart icon">
+  <rect width="1024" height="1024" rx="220" fill="#3D7A2A"/>
+  <!-- subtle texture -->
+  <rect width="1024" height="1024" rx="220" fill="#4A8A33" opacity="0.08"/>
+  <!-- Sun -->
+  <circle cx="505" cy="285" r="125" fill="#F9C84B"/>
+  <g stroke="#F9C84B" stroke-width="18" stroke-linecap="round" opacity="0.95">
+    <line x1="505" y1="95" x2="505" y2="135"/>
+    <line x1="395" y1="130" x2="420" y2="165"/>
+    <line x1="305" y1="200" x2="340" y2="222"/>
+    <line x1="620" y1="130" x2="595" y2="165"/>
+  </g>
+  <!-- Barn -->
+  <path d="M 485 465 L 690 260 L 895 465 L 895 640 L 485 640 Z" fill="white"/>
+  <path d="M 485 470 L 690 268 L 680 268 L 495 470 Z" fill="#E8EED8" opacity="0.9"/>
+  <!-- Barn window -->
+  <rect x="655" y="345" width="32" height="32" rx="4" fill="#3D7A2A"/>
+  <rect x="693" y="345" width="32" height="32" rx="4" fill="#3D7A2A"/>
+  <rect x="655" y="383" width="32" height="32" rx="4" fill="#3D7A2A"/>
+  <rect x="693" y="383" width="32" height="32" rx="4" fill="#3D7A2A"/>
+  <!-- Barn door -->
+  <rect x="615" y="495" width="150" height="145" fill="#3D7A2A" rx="2"/>
+  <g stroke="white" stroke-width="14" stroke-linecap="round">
+    <line x1="615" y1="495" x2="765" y2="640"/>
+    <line x1="765" y1="495" x2="615" y2="640"/>
+  </g>
+  <!-- Field foreground curved -->
+  <path d="M 90 690 Q 460 600 910 640 L 910 940 Q 560 990 190 930 Q 120 900 90 690 Z" fill="white"/>
+  <!-- Furrows -->
+  <path d="M 90 730 Q 300 670 520 635 Q 380 670 90 760 Z" fill="#3D7A2A"/>
+  <path d="M 160 840 Q 350 730 610 640 Q 450 690 120 865 Z" fill="#3D7A2A"/>
+  <path d="M 340 945 Q 520 750 730 635 Q 620 700 300 970 Z" fill="#3D7A2A"/>
+  <path d="M 540 965 Q 650 800 820 650 Q 740 710 520 980 Z" fill="#3D7A2A"/>
+  <path d="M 840 920 Q 860 800 910 660 L 910 840 Q 900 900 840 920 Z" fill="#3D7A2A"/>
+  <!-- Pin -->
+  <g transform="translate(215, 520)">
+    <path d="M 0 0 C -55 0 -105 44 -105 107 C -105 170 -20 260 0 285 C 20 260 105 170 105 107 C 105 44 55 0 0 0 Z" fill="#F9C84B" stroke="#3D7A2A" stroke-width="6" stroke-linejoin="round"/>
+    <ellipse cx="0" cy="285" rx="12" ry="6" fill="#2E5E1E" opacity="0.9"/>
+    <circle cx="0" cy="105" r="62" fill="#3D7A2A"/>
+    <circle cx="0" cy="105" r="52" fill="#2D5A22" opacity="0.15"/>
+    <!-- Leaf -->
+    <path d="M -28 125 C -18 85 5 62 32 72 C 25 95 8 118 -6 132 C -10 118 -14 105 -6 88 C -14 98 -22 112 -28 125 Z" fill="#F9C84B" stroke="#F9C84B" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M -6 88 C -6 105 -10 120 -14 132" stroke="#3D7A2A" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
+  </g>
+</svg>
